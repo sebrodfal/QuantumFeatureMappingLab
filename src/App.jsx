@@ -1317,6 +1317,7 @@ export default function App() {
 
         h1, h2, h3, .section-title {
           color: ${C.white};
+          font-weight: 100;
         }
 
         .header {
@@ -1336,10 +1337,11 @@ export default function App() {
         }
 
         h1 {
-          font-family: Georgia, serif;
+          font-family:  Georgia, serif;
           margin: 7px 0 0;
           font-size: clamp(32px, 3.2vw, 43px);
           line-height: 1.08;
+          font-weight: 100;
         }
 
         .subtitle {
