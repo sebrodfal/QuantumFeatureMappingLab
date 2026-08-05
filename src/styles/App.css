@@ -28,6 +28,18 @@ h1, h2, h3, .section-title {
   margin: 0 auto 16px;
 }
 
+.brand-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.brand-logo-img {
+  height: 36px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
 .brand {
   color: #8BE9FD;
   font-size: 12px;
@@ -955,4 +967,128 @@ input[type="range"] {
 @media (max-width: 480px) {
   h1 { font-size: 26px; }
   .sensor-grid { grid-template-columns: 1fr; }
+}
+
+/* --- Animated Extraction Flow Bar --- */
+@keyframes flowLaser {
+  0% { left: -35%; opacity: 0; }
+  25% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+@keyframes pulseGlowDot {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 10px currentColor; }
+}
+
+.extraction-flow-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, #0F1B2D 0%, #14233A 50%, #19142B 100%);
+  border: 1px solid #263954;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.flow-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 16px;
+  background: rgba(20, 35, 58, 0.85);
+  border: 1px solid #263954;
+  border-radius: 8px;
+  position: relative;
+  min-width: 170px;
+  text-align: center;
+}
+
+.flow-badge strong {
+  font-size: 13px;
+  color: #F8FAFF;
+}
+
+.flow-badge-asset { border-color: rgba(124, 142, 168, 0.6); }
+.flow-badge-signals { border-color: rgba(139, 233, 253, 0.6); }
+.flow-badge-quantum {
+  border-color: rgba(155, 93, 229, 0.6);
+  box-shadow: 0 0 15px rgba(155, 93, 229, 0.15);
+}
+
+.flow-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #79C9B7;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  animation: pulseGlowDot 2s ease-in-out infinite;
+}
+.flow-pulse-dot.cyan { background: #8BE9FD; }
+.flow-pulse-dot.purple { background: #9B5DE5; }
+
+.flow-sub {
+  font-size: 11px;
+  color: #9EACC2;
+  margin-top: 3px;
+}
+
+.flow-connector {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 24px;
+  justify-content: center;
+}
+
+.flow-laser {
+  position: absolute;
+  bottom: 2px;
+  width: 100%;
+  height: 2px;
+  background: rgba(139, 233, 253, 0.2);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.flow-laser::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #8BE9FD, transparent);
+  animation: flowLaser 2.2s linear infinite;
+}
+
+.flow-laser.purple::after {
+  background: linear-gradient(90deg, transparent, #D8B4FE, transparent);
+  animation: flowLaser 2.2s linear infinite 0.8s;
+}
+
+.flow-label {
+  font-size: 10px;
+  color: #8BE9FD;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 900px) {
+  .extraction-flow-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .flow-connector {
+    width: 100%;
+  }
 }

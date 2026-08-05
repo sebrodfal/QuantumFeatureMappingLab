@@ -102,8 +102,8 @@ export default function App() {
     heatmap: { matrix: R.classical.corr, labels: RAW, showValues: true },
     scatter: {
       accent: C.classical,
-      xLabel: 'Load',
-      yLabel: 'Vibration',
+      xLabel: 'Hoist Load',
+      yLabel: 'Crowd Vib.',
       points: rawPoints,
       labels,
       note: 'Overlap between colors indicates records with similar sensor-space patterns.',
@@ -210,6 +210,11 @@ export default function App() {
         />
       )}
 
+      <QuantumCircuitSection
+        circuitOpen={circuitOpen}
+        onToggle={() => setCircuitOpen((open) => !open)}
+      />
+      
       <div className="band">
         SAME DATA RECORD <strong>→</strong> TWO COMPLEMENTARY FEATURE SPACES
       </div>
@@ -218,11 +223,6 @@ export default function App() {
         <FeatureSpaceCard {...classicalCard} />
         <FeatureSpaceCard {...quantumCard} />
       </main>
-
-      <QuantumCircuitSection
-        circuitOpen={circuitOpen}
-        onToggle={() => setCircuitOpen((open) => !open)}
-      />
 
       <FeatureSpaceComparison
         rawCorrelation={rawCorrelation}
