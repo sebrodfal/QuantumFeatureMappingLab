@@ -52,7 +52,7 @@ export function FeatureSpaceComparison({
       </div>
 
       <div className="metrics-subtitle">Downstream Validation</div>
-      <div className="evaluation-grid three">
+      <div className="evaluation-grid two">
         <div className="evaluation-card">
           <div className="small-label">AUC Improvement</div>
           <div className="evaluation-value" style={{ color: C.positive }}>
@@ -67,13 +67,6 @@ export function FeatureSpaceComparison({
             −{falseAlarmReduction.toFixed(0)}%
           </div>
         </div>
-
-        <div className="evaluation-card">
-          <div className="small-label">Target Recall</div>
-          <div className="evaluation-value" style={{ color: C.grey }}>
-            ≥ 80%
-          </div>
-        </div>
       </div>
 
       <div className="eval-footnote">
@@ -84,3 +77,4 @@ export function FeatureSpaceComparison({
     </section>
   );
 }
+

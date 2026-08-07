@@ -186,21 +186,19 @@ export default function App() {
         sensorColors={sensorColors}
       />
 
-      <div className="sticky-noise-wrap">
-        <StickyControls
-          noise={noise}
-          onNoiseChange={setNoise}
-          visibleSample={visibleSample}
-          visibleCount={visibleCount}
-          selectedLabel={selectedLabel}
-          onSampleChange={setSample}
-          showThresholdExplanation={showThresholdExplanation}
-          onToggleThresholdExplanation={() =>
-            setShowThresholdExplanation((open) => !open)
-          }
-          learnMoreButtonRef={learnMoreButtonRef}
-        />
-      </div>
+      <StickyControls
+        noise={noise}
+        onNoiseChange={setNoise}
+        visibleSample={visibleSample}
+        visibleCount={visibleCount}
+        selectedLabel={selectedLabel}
+        onSampleChange={setSample}
+        showThresholdExplanation={showThresholdExplanation}
+        onToggleThresholdExplanation={() =>
+          setShowThresholdExplanation((open) => !open)
+        }
+        learnMoreButtonRef={learnMoreButtonRef}
+      />
 
       {showThresholdExplanation && (
         <ThresholdPopover
