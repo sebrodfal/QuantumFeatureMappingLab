@@ -35,9 +35,24 @@ export function FeatureSpaceCard({
       <div className={`representation-map-card ${frameClass}`}>
         <div className="heatmap-header">
           <div>
-            <div className="heatmap-title">Feature Dependency Matrix</div>
+            <div className="heatmap-title-row">
+              <span className="heatmap-title">Feature Dependency Matrix</span>
+              <span
+                className="feature-count-badge"
+                style={{
+                  color: correlation.color,
+                  borderColor: correlation.color,
+                }}
+              >
+                {variant === 'classical'
+                  ? 'Source Variables: 4 (4 × 4)'
+                  : 'Derived Quantum Features: 14 (14 × 14)'}
+              </span>
+            </div>
             <div className="heatmap-subtitle">
-              Correlation structure across the feature space
+              {variant === 'classical'
+                ? 'Correlation structure across 4 original telemetry signals'
+                : 'Correlation structure across 14 derived quantum observables'}
             </div>
           </div>
           <div

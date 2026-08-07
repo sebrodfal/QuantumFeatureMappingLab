@@ -6,6 +6,11 @@ export function FeatureSpaceComparison({
   aucDelta,
   falseAlarmReduction,
 }) {
+  const redundancyReduction =
+    rawCorrelation > 0
+      ? ((rawCorrelation - quantumCorrelation) / rawCorrelation) * 100
+      : 0;
+
   return (
     <section className="card">
       <h2 className="section-title">3. Feature Space Comparison</h2>
@@ -14,39 +19,25 @@ export function FeatureSpaceComparison({
         a comparable operating target.
       </p>
 
-      <div className="metrics-subtitle">Feature Space</div>
-      <div className="evaluation-grid">
-        <div className="evaluation-card">
-          <div className="small-label">Source Variables</div>
-          <div
-            className="evaluation-value"
-            style={{ color: C.classicalLight }}
-          >
-            4
-          </div>
-        </div>
-
-        <div className="evaluation-card">
-          <div className="small-label">Derived Quantum Features</div>
-          <div className="evaluation-value" style={{ color: C.quantumLight }}>
-            14
-          </div>
-        </div>
-
+      <div className="metrics-subtitle">Feature Space Comparative Metrics</div>
+      <div className="evaluation-grid two">
         <div className="evaluation-card">
           <div className="small-label">Representation Expansion</div>
           <div className="evaluation-value" style={{ color: C.interaction }}>
             3.5×
           </div>
+          <div className="evaluation-subtext">
+            4 source signals → 14 derived quantum observables
+          </div>
         </div>
 
         <div className="evaluation-card">
-          <div className="small-label">Avg. Redundancy |ρ|</div>
-          <div
-            className="evaluation-value"
-            style={{ color: C.selected, fontSize: 17 }}
-          >
-            {rawCorrelation.toFixed(2)} → {quantumCorrelation.toFixed(2)}
+          <div className="small-label">Avg. Redundancy Reduction |ρ|</div>
+          <div className="evaluation-value" style={{ color: C.selected }}>
+            −{redundancyReduction.toFixed(0)}%
+          </div>
+          <div className="evaluation-subtext">
+            {rawCorrelation.toFixed(2)} → {quantumCorrelation.toFixed(2)} average correlation
           </div>
         </div>
       </div>
@@ -77,4 +68,5 @@ export function FeatureSpaceComparison({
     </section>
   );
 }
+
 
