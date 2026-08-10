@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "freeze-model": "node scripts/freezeModel.js",
+    "find-curated-cases": "node scripts/findCuratedCases.js",
+    "mock-board": "node scripts/mockBoard.js"
   },
   "dependencies": {
     "lucide-react": "^1.28.0",
@@ -19,6 +22,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.74.0",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "ws": "^8.18.0"
   }
 }

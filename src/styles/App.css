@@ -1297,3 +1297,396 @@ input[type="range"] {
     width: 100%;
   }
 }
+
+/* --- Live Board panel (physical ESP32 board, docs/demo-fisico-spec.md) --- */
+.live-board-fixed-btn {
+  left: 28px;
+  right: auto;
+  border-color: rgba(121, 201, 183, 0.45);
+}
+
+.live-board-fixed-btn:hover {
+  border-color: #79C9B7;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6), 0 0 28px rgba(121, 201, 183, 0.4);
+}
+
+.live-board-panel {
+  left: 28px;
+  right: auto;
+  width: min(440px, calc(100vw - 56px));
+  border-color: rgba(121, 201, 183, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(121, 201, 183, 0.18);
+}
+
+.live-board-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.live-board-section + .live-board-section {
+  padding-top: 16px;
+  border-top: 1px solid rgba(38, 57, 84, 0.8);
+}
+
+.live-board-url-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.live-board-url-input {
+  flex: 1;
+  padding: 8px 10px;
+  background: rgba(8, 17, 32, 0.7);
+  border: 1px solid #263954;
+  border-radius: 6px;
+  color: #F8FAFF;
+  font-size: 13px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.live-board-url-input:disabled { opacity: 0.6; }
+
+.live-board-action-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(121, 201, 183, 0.5);
+  background: rgba(121, 201, 183, 0.12);
+  color: #79C9B7;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.live-board-action-btn:hover { background: rgba(121, 201, 183, 0.22); }
+
+.live-board-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9EACC2;
+}
+
+.live-board-error { color: #FB923C; }
+
+.live-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #9EACC2;
+}
+
+.live-status-dot.live-status-connected { background: #79C9B7; box-shadow: 0 0 6px #79C9B7; }
+.live-status-dot.live-status-connecting { background: #FBBF24; box-shadow: 0 0 6px #FBBF24; }
+.live-status-dot.live-status-error { background: #FB923C; box-shadow: 0 0 6px #FB923C; }
+.live-status-dot.live-status-disconnected { background: #9EACC2; }
+
+.live-board-mode-value {
+  margin-top: 6px;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  color: #F8FAFF;
+}
+
+.live-board-mode-source {
+  font-size: 11px;
+  color: #9EACC2;
+  font-style: italic;
+}
+
+.live-board-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.live-board-mode-toggle button {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1px solid #263954;
+  background: rgba(20, 35, 58, 0.85);
+  color: #9EACC2;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.live-board-mode-toggle button.active {
+  border-color: #9B5DE5;
+  color: #D8B4FE;
+  background: rgba(155, 93, 229, 0.16);
+}
+
+.live-board-reading-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: #F8FAFF;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.live-board-verdict-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.live-badge {
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.live-badge.is-alert {
+  color: #FB923C;
+  background: rgba(251, 146, 60, 0.12);
+  border: 1px solid rgba(251, 146, 60, 0.45);
+}
+
+.live-badge.is-ok {
+  color: #79C9B7;
+  background: rgba(121, 201, 183, 0.12);
+  border: 1px solid rgba(121, 201, 183, 0.45);
+}
+
+@media (max-width: 900px) {
+  .live-board-panel { left: 14px; right: 14px; width: auto; }
+}
+
+.live-board-switch-section { padding-top: 0; }
+
+.live-board-hint {
+  margin-top: 8px;
+  color: #9EACC2;
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* --- Classical / Quantum mode switch --- */
+@keyframes modeAlertBlink {
+  0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(251, 146, 60, 0.9); }
+  50% { opacity: 0.5; text-shadow: none; }
+}
+
+.mode-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 10px;
+  padding: 10px 4px;
+}
+
+.mode-switch-label {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #9EACC2;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+
+.mode-switch-label:disabled { cursor: default; }
+
+.mode-switch-label.is-active { color: #F8FAFF; }
+
+.mode-switch-label.is-alerting {
+  color: #FB923C;
+  animation: modeAlertBlink 0.9s ease-in-out infinite;
+}
+
+.mode-switch-track {
+  position: relative;
+  width: 64px;
+  height: 30px;
+  padding: 0;
+  border-radius: 16px;
+  background: rgba(20, 35, 58, 0.9);
+  border: 1px solid #263954;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+
+.mode-switch-track.is-quantum { border-color: rgba(155, 93, 229, 0.6); }
+.mode-switch-track.is-classical { border-color: rgba(124, 142, 168, 0.6); }
+
+.mode-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #7C8EA8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+}
+
+.mode-switch-track.is-quantum .mode-switch-thumb {
+  transform: translateX(32px);
+  background: #9B5DE5;
+  box-shadow: 0 2px 10px rgba(155, 93, 229, 0.6);
+}
+
+.mode-switch-source {
+  font-size: 10px;
+  color: #9EACC2;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* --- Staged truth chip + correctness marks --- */
+.staged-truth-chip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #F8FAFF;
+}
+
+.staged-truth-label {
+  color: #9EACC2;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.staged-truth-caption {
+  flex-basis: 100%;
+  color: #9EACC2;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.correctness-mark { font-weight: 800; }
+
+/* --- Compact connection settings (collapsed by default) --- */
+.live-board-connection-compact {
+  margin-top: 4px;
+}
+
+.live-board-connection-compact summary {
+  cursor: pointer;
+  color: #9EACC2;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(38, 57, 84, 0.8);
+}
+
+.live-board-connection-compact summary:hover { color: #F8FAFF; }
+
+.live-board-connection-compact[open] summary { margin-bottom: 10px; }
+
+.live-board-connection-compact .live-board-reading-grid {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(38, 57, 84, 0.6);
+}
+
+/* --- Board vs. Simulate tabs --- */
+.input-source-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.input-source-tabs button {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #263954;
+  background: rgba(20, 35, 58, 0.6);
+  color: #9EACC2;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.input-source-tabs button.active {
+  border-color: #8BE9FD;
+  color: #F8FAFF;
+  background: rgba(139, 233, 253, 0.12);
+}
+
+/* --- Simulated board (on-screen perillas) --- */
+.sim-board-start {
+  text-align: center;
+}
+
+.sim-board-start .control-text { margin-bottom: 10px; }
+
+.sim-board-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.sim-preset-btn {
+  padding: 5px 11px;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  background: rgba(139, 233, 253, 0.08);
+  color: #8BE9FD;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sim-preset-btn:hover {
+  background: rgba(139, 233, 253, 0.18);
+}
+
+.sim-slider-row + .sim-slider-row { margin-top: 12px; }
+
+.sim-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  color: #9EACC2;
+}
+
+.sim-slider-label strong {
+  color: #F8FAFF;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.sim-slider {
+  width: 100%;
+  margin-top: 4px;
+  accent-color: #8BE9FD;
+}
+
+.sim-stop-btn {
+  width: 100%;
+  margin-top: 16px;
+  border-color: rgba(251, 146, 60, 0.5);
+  background: rgba(251, 146, 60, 0.12);
+  color: #FB923C;
+}

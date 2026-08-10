@@ -2,7 +2,14 @@ import { MachineDiagram } from '../MachineDiagram/MachineDiagram';
 import { SensorCard } from '../SensorCard/SensorCard';
 import { RAW, UNITS } from '../../data/constants';
 
-export function SourceDataSection({ visibleSample, selectedSensors, sensorColors }) {
+export function SourceDataSection({
+  visibleSample,
+  selectedSensors,
+  sensorColors,
+  alert = false,
+  liveMode = false,
+  sensorDisplayValues = null,
+}) {
   return (
     <section className="card">
       <h2 className="section-title">1. Common Source of Industrial Data — Heavy Mining Shovel Telemetry</h2>
@@ -15,11 +22,15 @@ export function SourceDataSection({ visibleSample, selectedSensors, sensorColors
       <div className="source-grid">
         <div>
           <span className="tag">Physical Asset: Electric Mining Rope Shovel</span>
-          <MachineDiagram />
+          <MachineDiagram alert={alert} />
         </div>
 
         <div>
-          <span className="tag">Selected Machine Telemetry Record #{visibleSample + 1}</span>
+          <span className="tag">
+            {liveMode
+              ? 'Live Physical Reading (board)'
+              : `Selected Machine Telemetry Record #${visibleSample + 1}`}
+          </span>
           <div className="sensor-grid">
             {RAW.map((name, i) => (
               <SensorCard
@@ -28,6 +39,7 @@ export function SourceDataSection({ visibleSample, selectedSensors, sensorColors
                 value={selectedSensors[i]}
                 unit={UNITS[i]}
                 color={sensorColors[i]}
+                displayText={sensorDisplayValues ? sensorDisplayValues[i] : undefined}
               />
             ))}
           </div>

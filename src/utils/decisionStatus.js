@@ -1,4 +1,4 @@
-import { C } from '../data/constants';
+import { C } from '../data/constants.js';
 
 /* Classifies the selected record's outcome relative to its known condition
    and the ALERT / NO ALERT decision, for the small secondary status label. */
