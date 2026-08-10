@@ -1,0 +1,299 @@
+{
+  "generatedAt": "2026-08-10T20:12:08.373Z",
+  "stepsPerAxis": 9,
+  "totalCombinationsSwept": 6561,
+  "counts": {
+    "disagreeQuantumCatches": 1559,
+    "disagreeClassicalOnly": 1368,
+    "agreeHealthy": 827,
+    "agreeDeviation": 2807
+  },
+  "case1_quantumCatchesEarly": [
+    {
+      "reading": {
+        "hoistLoad": 437.5,
+        "crowdVib": 12.5,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.06322197712567774,
+      "classicalAlert": false,
+      "classicalMargin": -0.23637851898947615,
+      "quantumScore": 0.9999994168635838,
+      "quantumAlert": true,
+      "quantumMargin": 0.6598863826435205
+    },
+    {
+      "reading": {
+        "hoistLoad": 375,
+        "crowdVib": 12.5,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.05435980219572875,
+      "classicalAlert": false,
+      "classicalMargin": -0.24524069391942513,
+      "quantumScore": 0.9999988708186077,
+      "quantumAlert": true,
+      "quantumMargin": 0.6598858365985444
+    },
+    {
+      "reading": {
+        "hoistLoad": 437.5,
+        "crowdVib": 6.25,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.040680754690849225,
+      "classicalAlert": false,
+      "classicalMargin": -0.25891974142430463,
+      "quantumScore": 0.9999977757354341,
+      "quantumAlert": true,
+      "quantumMargin": 0.6598847415153708
+    },
+    {
+      "reading": {
+        "hoistLoad": 375,
+        "crowdVib": 18.75,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.08381834296183557,
+      "classicalAlert": false,
+      "classicalMargin": -0.2157821531533183,
+      "quantumScore": 0.9999925684380193,
+      "quantumAlert": true,
+      "quantumMargin": 0.659879534217956
+    },
+    {
+      "reading": {
+        "hoistLoad": 437.5,
+        "crowdVib": 12.5,
+        "driveTemp": 177.5,
+        "cableTension": 200
+      },
+      "classicalScore": 0.097106735558184,
+      "classicalAlert": false,
+      "classicalMargin": -0.20249376055696988,
+      "quantumScore": 0.9999903552519362,
+      "quantumAlert": true,
+      "quantumMargin": 0.6598773210318729
+    }
+  ],
+  "case1_classicalFalseAlarm": [
+    {
+      "reading": {
+        "hoistLoad": 500,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 1
+      },
+      "classicalScore": 0.9868766085585253,
+      "classicalAlert": true,
+      "classicalMargin": 0.6872761124433715,
+      "quantumScore": 0.243390547280667,
+      "quantumAlert": false,
+      "quantumMargin": -0.09672248693939633
+    },
+    {
+      "reading": {
+        "hoistLoad": 500,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 75.625
+      },
+      "classicalScore": 0.9851216191756643,
+      "classicalAlert": true,
+      "classicalMargin": 0.6855211230605105,
+      "quantumScore": 0.2936777041921695,
+      "quantumAlert": false,
+      "quantumMargin": -0.04643533002789385
+    },
+    {
+      "reading": {
+        "hoistLoad": 437.5,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 50.75
+      },
+      "classicalScore": 0.9832891336182336,
+      "classicalAlert": true,
+      "classicalMargin": 0.6836886375030797,
+      "quantumScore": 0.2405441657648503,
+      "quantumAlert": false,
+      "quantumMargin": -0.09956886845521304
+    },
+    {
+      "reading": {
+        "hoistLoad": 500,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 150.25
+      },
+      "classicalScore": 0.9831359458297505,
+      "classicalAlert": true,
+      "classicalMargin": 0.6835354497145967,
+      "quantumScore": 0.045120874758308734,
+      "quantumAlert": false,
+      "quantumMargin": -0.2949921594617546
+    },
+    {
+      "reading": {
+        "hoistLoad": 437.5,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 75.625
+      },
+      "classicalScore": 0.9825774369462306,
+      "classicalAlert": true,
+      "classicalMargin": 0.6829769408310766,
+      "quantumScore": 0.005922007907318383,
+      "quantumAlert": false,
+      "quantumMargin": -0.33419102631274494
+    }
+  ],
+  "case2_bothHealthy": [
+    {
+      "reading": {
+        "hoistLoad": 0,
+        "crowdVib": 0,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.008592439329529541,
+      "classicalAlert": false,
+      "classicalMargin": -0.29100805678562436,
+      "quantumScore": 0.0005802833427732765,
+      "quantumAlert": false,
+      "quantumMargin": -0.33953275087729007
+    },
+    {
+      "reading": {
+        "hoistLoad": 62.5,
+        "crowdVib": 0,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.010072724954395047,
+      "classicalAlert": false,
+      "classicalMargin": -0.28952777116075884,
+      "quantumScore": 0.00006664188192240297,
+      "quantumAlert": false,
+      "quantumMargin": -0.34004639233814093
+    },
+    {
+      "reading": {
+        "hoistLoad": 125,
+        "crowdVib": 0,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.011804994167964225,
+      "classicalAlert": false,
+      "classicalMargin": -0.28779550194718967,
+      "quantumScore": 0.00018928633237451579,
+      "quantumAlert": false,
+      "quantumMargin": -0.3399237478876888
+    },
+    {
+      "reading": {
+        "hoistLoad": 125,
+        "crowdVib": 0,
+        "driveTemp": 200,
+        "cableTension": 175.125
+      },
+      "classicalScore": 0.012310371142997174,
+      "classicalAlert": false,
+      "classicalMargin": -0.2872901249721567,
+      "quantumScore": 0.0008206737556239536,
+      "quantumAlert": false,
+      "quantumMargin": -0.3392923604644394
+    },
+    {
+      "reading": {
+        "hoistLoad": 0,
+        "crowdVib": 6.25,
+        "driveTemp": 200,
+        "cableTension": 200
+      },
+      "classicalScore": 0.013605682903027768,
+      "classicalAlert": false,
+      "classicalMargin": -0.2859948132121261,
+      "quantumScore": 0.000533413635117838,
+      "quantumAlert": false,
+      "quantumMargin": -0.3395796205849455
+    }
+  ],
+  "case3_bothDeviation": [
+    {
+      "reading": {
+        "hoistLoad": 500,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 200
+      },
+      "classicalScore": 0.9816697294726568,
+      "classicalAlert": true,
+      "classicalMargin": 0.6820692333575029,
+      "quantumScore": 0.9986089239641854,
+      "quantumAlert": true,
+      "quantumMargin": 0.6584958897441221
+    },
+    {
+      "reading": {
+        "hoistLoad": 375,
+        "crowdVib": 50,
+        "driveTemp": 20,
+        "cableTension": 1
+      },
+      "classicalScore": 0.9820007698355806,
+      "classicalAlert": true,
+      "classicalMargin": 0.6824002737204267,
+      "quantumScore": 0.9897795504390123,
+      "quantumAlert": true,
+      "quantumMargin": 0.649666516218949
+    },
+    {
+      "reading": {
+        "hoistLoad": 375,
+        "crowdVib": 50,
+        "driveTemp": 42.5,
+        "cableTension": 1
+      },
+      "classicalScore": 0.9716195099194042,
+      "classicalAlert": true,
+      "classicalMargin": 0.6720190138042503,
+      "quantumScore": 0.9996891829839112,
+      "quantumAlert": true,
+      "quantumMargin": 0.6595761487638478
+    },
+    {
+      "reading": {
+        "hoistLoad": 500,
+        "crowdVib": 50,
+        "driveTemp": 42.5,
+        "cableTension": 200
+      },
+      "classicalScore": 0.9711031567155489,
+      "classicalAlert": true,
+      "classicalMargin": 0.6715026606003951,
+      "quantumScore": 0.9999860012636882,
+      "quantumAlert": true,
+      "quantumMargin": 0.6598729670436249
+    },
+    {
+      "reading": {
+        "hoistLoad": 500,
+        "crowdVib": 50,
+        "driveTemp": 42.5,
+        "cableTension": 175.125
+      },
+      "classicalScore": 0.9722703400835746,
+      "classicalAlert": true,
+      "classicalMargin": 0.6726698439684207,
+      "quantumScore": 0.9979279335032545,
+      "quantumAlert": true,
+      "quantumMargin": 0.6578148992831911
+    }
+  ]
+}

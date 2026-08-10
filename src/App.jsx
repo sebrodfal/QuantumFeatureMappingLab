@@ -5,6 +5,7 @@ import { runPipeline } from './utils/pipeline';
 import { meanOff } from './utils/correlation';
 import { decisionStatus } from './utils/decisionStatus';
 import { useThresholdPopover } from './hooks/useThresholdPopover';
+import { useLiveBoard } from './hooks/useLiveBoard';
 
 import { Header } from './components/Header/Header';
 import { SourceDataSection } from './components/SourceDataSection/SourceDataSection';
@@ -14,6 +15,7 @@ import { FeatureSpaceCard } from './components/FeatureSpaceCard/FeatureSpaceCard
 import { QuantumCircuitSection } from './components/QuantumCircuitSection/QuantumCircuitSection';
 import { FeatureSpaceComparison } from './components/FeatureSpaceComparison/FeatureSpaceComparison';
 import { MethodologyNote } from './components/MethodologyNote/MethodologyNote';
+import { LiveBoardPanel } from './components/LiveBoardPanel/LiveBoardPanel';
 
 /*
   QUANTUM FEATURE MAPPING LAB
@@ -41,6 +43,14 @@ export default function App() {
     learnMoreButtonRef,
     thresholdPopoverRef,
   } = useThresholdPopover();
+
+  const liveBoard = useLiveBoard();
+  const liveActive = liveBoard.isLive;
+  const machineAlert = liveActive
+    ? liveBoard.activeMode === 'classical'
+      ? liveBoard.result.classicalAlert
+      : liveBoard.result.quantumAlert
+    : false;
 
   const R = useMemo(() => runPipeline(noise), [noise]);
 
@@ -89,6 +99,21 @@ export default function App() {
   ];
 
   const selectedConditionColor = selectedLabel ? C.deviation : C.healthy;
+
+  // Section 1 (the physical source) is driven by the Live Board — real or
+  // simulated perillas — when it's active; everything from Section 2 down
+  // (heatmaps, scatter, Selected Record) always stays on the Explore Data
+  // Record slider, exploring the synthetic dataset. The two are
+  // intentionally kept from crossing.
+  const liveSensorValues = liveActive ? liveBoard.result.x : selectedSensors;
+  const liveSensorDisplayValues = liveActive
+    ? [
+        `${liveBoard.reading.hoistLoad.toFixed(1)} kN`,
+        `${liveBoard.reading.crowdVib.toFixed(1)} mm/s`,
+        `${liveBoard.reading.driveTemp.toFixed(1)} °C`,
+        `${liveBoard.reading.cableTension.toFixed(1)} MPa`,
+      ]
+    : null;
 
   const classicalCard = {
     variant: 'classical',
@@ -182,9 +207,14 @@ export default function App() {
 
       <SourceDataSection
         visibleSample={visibleSample}
-        selectedSensors={selectedSensors}
+        selectedSensors={liveSensorValues}
         sensorColors={sensorColors}
+        alert={machineAlert}
+        liveMode={liveActive}
+        sensorDisplayValues={liveSensorDisplayValues}
       />
+
+      <LiveBoardPanel liveBoard={liveBoard} />
 
       <StickyControls
         noise={noise}

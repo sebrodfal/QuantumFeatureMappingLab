@@ -1,4 +1,4 @@
-import { standardize } from './numeric';
+import { standardize } from './numeric.js';
 
 export function corrMatrix(X) {
   const dimensions = X[0].length;
