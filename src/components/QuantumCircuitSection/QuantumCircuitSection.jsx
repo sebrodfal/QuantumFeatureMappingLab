@@ -2,10 +2,10 @@ import { Circuit } from '../Circuit/Circuit';
 
 export function QuantumCircuitSection({ circuitOpen, onToggle }) {
   return (
-    <section className="card">
+    <section className="card circuit-card">
       <button
         type="button"
-        className="collapsible-toggle"
+        className="collapsible-toggle circuit-toggle-btn"
         onClick={onToggle}
       >
         {circuitOpen
@@ -70,3 +70,5 @@ export function QuantumCircuitSection({ circuitOpen, onToggle }) {
     </section>
   );
 }
+
+

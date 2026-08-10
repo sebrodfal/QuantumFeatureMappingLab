@@ -26,8 +26,8 @@ export const C = {
   warning: '#FBBF24',
 };
 
-export const RAW = ['Load', 'Vibration', 'Temperature', 'Current'];
-export const UNITS = ['rel.', 'rel.', 'rel.', 'rel.'];
+export const RAW = ['Hoist Load', 'Crowd Vib.', 'Drive Temp.', 'Cable Tension'];
+export const UNITS = ['kN', 'mm/s', '°C', 'MPa'];
 
 export const QNAMES = [
   '⟨Z₀⟩',
