@@ -11,7 +11,7 @@ export function SensorCard({ name, value, unit, color, displayText }) {
     <div className="sensor-card">
       <div className="sensor-title">
         <span style={{ color }}>{name}</span>
-        <span>{displayText ?? `${(value * 100).toFixed(0)} ${unit}`}</span>
+        <span className="sensor-value-monospaced">{displayText ?? `${(value * 100).toFixed(0)} ${unit}`}</span>
       </div>
       <SignalLine value={value} color={color} />
     </div>
