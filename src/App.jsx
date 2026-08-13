@@ -241,6 +241,11 @@ export default function App() {
       <QuantumCircuitSection
         circuitOpen={circuitOpen}
         onToggle={() => setCircuitOpen((open) => !open)}
+        rawCorrelation={rawCorrelation}
+        quantumCorrelation={quantumCorrelation}
+        aucDelta={aucDelta}
+        falseAlarmReduction={falseAlarmReduction}
+        topFeatures={[QNAMES[featureA], QNAMES[featureB]]}
       />
       
       <div className="band">

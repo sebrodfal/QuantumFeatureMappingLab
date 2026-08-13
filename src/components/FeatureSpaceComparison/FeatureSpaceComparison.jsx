@@ -13,7 +13,7 @@ export function FeatureSpaceComparison({
 
   return (
     <section className="card comparison-section">
-      <h2 className="section-title">3. Feature Space Comparison</h2>
+      <h2 className="section-title">3. Enhanced Model Performance & Impact</h2>
       <p className="section-description">
         Same physical records, two feature representations, and validation at
         a comparable operating target.
