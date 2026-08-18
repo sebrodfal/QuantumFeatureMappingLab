@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { C } from '../../data/constants';
+import { useDraggable } from '../../hooks/useDraggable';
 
 export function StickyControls({
   noise,
@@ -14,16 +15,20 @@ export function StickyControls({
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef(null);
+  const { panelRef, position, isDragging, dragHandleProps } = useDraggable();
 
-  // Close when clicking outside the expanded panel
+  // Close when clicking outside the expanded panel (unless dragging)
   useEffect(() => {
-    if (!isExpanded) return undefined;
+    if (!isExpanded || isDragging) return undefined;
 
     const handleClickOutside = (event) => {
       if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target) &&
         containerRef.current &&
         !containerRef.current.contains(event.target) &&
-        !event.target.closest('.threshold-popover')
+        !event.target.closest('.threshold-popover') &&
+        !event.target.closest('.floating-fixed-btn')
       ) {
         setIsExpanded(false);
       }
@@ -31,9 +36,21 @@ export function StickyControls({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isExpanded]);
+  }, [isExpanded, isDragging, panelRef]);
 
   const noisePercentage = Math.round((noise / 3) * 100);
+
+  const panelStyle = position
+    ? {
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        right: 'auto',
+        bottom: 'auto',
+        margin: 0,
+        zIndex: 10000,
+      }
+    : undefined;
 
   return (
     <div className="floating-lab-controls-container" ref={containerRef}>
@@ -51,15 +68,21 @@ export function StickyControls({
           <span className="btn-arrow">▲</span>
         </button>
       ) : (
-        <section className="card controls floating-full-panel">
-          <div className="panel-top-bar">
+        <section
+          ref={panelRef}
+          style={panelStyle}
+          className={`card controls floating-full-panel lab-controls-movable ${isDragging ? 'is-dragging' : ''}`}
+        >
+          <div className="panel-top-bar" {...dragHandleProps}>
             <div className="panel-top-title">
+              <span className="drag-handle-grip" title="Click and drag to move panel">⠿</span>
               <span className="title-icon">🎛️</span>
               <strong>Lab Parameters & Data Exploration</strong>
+              <span className="drag-hint-badge">drag to move</span>
             </div>
             <button
               type="button"
-              className="panel-close-btn"
+              className="panel-close-btn no-drag"
               onClick={() => setIsExpanded(false)}
               aria-label="Close controls"
             >
@@ -137,7 +160,7 @@ export function StickyControls({
               <button
                 type="button"
                 ref={learnMoreButtonRef}
-                className="learn-more-button"
+                className="learn-more-button no-drag"
                 onClick={onToggleThresholdExplanation}
                 aria-expanded={showThresholdExplanation}
               >
@@ -151,6 +174,3 @@ export function StickyControls({
     </div>
   );
 }
-
-
-

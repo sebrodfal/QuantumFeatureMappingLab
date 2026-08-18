@@ -235,6 +235,26 @@ input[type="range"] {
   backdrop-filter: blur(24px);
   animation: panelSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10000;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.floating-full-panel.is-dragging {
+  cursor: grabbing !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(139, 233, 253, 0.45);
+  transform: scale(1.01);
+  user-select: none;
+}
+
+.lab-controls-movable {
+  max-width: 680px;
+  width: min(680px, calc(100vw - 32px));
+  left: 28px;
+  right: auto;
+}
+
+.lab-controls-movable .controls-grid-body {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
 }
 
 @keyframes panelSlideDown {
@@ -255,13 +275,40 @@ input[type="range"] {
   padding-bottom: 14px;
   margin-bottom: 20px;
   border-bottom: 1px solid #263954;
+  cursor: grab;
+}
+
+.panel-top-bar:active {
+  cursor: grabbing;
+}
+
+.drag-handle-grip {
+  color: #7C8EA8;
+  font-size: 16px;
+  letter-spacing: -2px;
+  margin-right: 4px;
+  opacity: 0.7;
+  cursor: grab;
+}
+
+.drag-hint-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(124, 142, 168, 0.15);
+  color: #94A3B8;
+  border: 1px solid rgba(124, 142, 168, 0.25);
+  margin-left: 6px;
 }
 
 .panel-top-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 16px;
+  gap: 8px;
+  font-size: 15px;
   font-weight: 700;
   color: #F8FAFF;
 }

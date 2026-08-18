@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { PHYSICAL_RANGES } from '../../data/calibration.js';
 import { STAGED_SCENARIOS } from '../../data/stagedScenarios.js';
 
@@ -20,31 +21,35 @@ export function midpointReading() {
    drives the same scoring path a real board message would (useLiveBoard's
    applyReading). Meant for showing the concept in a meeting, without
    waiting for hardware or for scripts/mockBoard.js's auto-cycling timer. */
-export function SimulatedBoardPanel({ isSimulating, reading, onStart, onChange, onStop }) {
-  if (!isSimulating || !reading) {
-    return (
-      <div className="sim-board-start">
-        <p className="control-text">
-          No physical board yet? Drag on-screen sliders to stand in for the
-          four potentiometers and drive the demo live.
-        </p>
-        <button type="button" className="live-board-action-btn" onClick={() => onStart(midpointReading())}>
-          🎚️ Start simulating perillas
-        </button>
-      </div>
-    );
-  }
+export function SimulatedBoardPanel({
+  isSimulating,
+  reading,
+  onStart,
+  onChange,
+  onUpdate,
+  _onStop,
+}) {
+  const handleUpdate = onChange || onUpdate;
+
+  // Auto-initialize simulation if opened so sliders are immediately draggable
+  useEffect(() => {
+    if (!isSimulating && onStart) {
+      onStart(midpointReading());
+    }
+  }, [isSimulating, onStart]);
+
+  const activeReading = reading || midpointReading();
 
   return (
     <div className="sim-board">
-      <div className="sim-board-presets">
+      <div className="sim-board-presets no-drag">
         {STAGED_SCENARIOS.map((scenario) => (
           <button
             key={scenario.id}
             type="button"
-            className="sim-preset-btn"
+            className="sim-preset-btn no-drag"
             title={scenario.narrative}
-            onClick={() => onChange(scenario.reading)}
+            onClick={() => handleUpdate && handleUpdate(scenario.reading)}
           >
             {scenario.label}
           </button>
@@ -54,34 +59,47 @@ export function SimulatedBoardPanel({ isSimulating, reading, onStart, onChange, 
       {SLIDER_FIELDS.map(({ key, label }) => {
         const { min, max, unit } = PHYSICAL_RANGES[key];
         const step = Math.max(0.1, (max - min) / 200);
+        const currentValue = activeReading[key] ?? ((min + max) / 2);
 
         return (
           <div className="sim-slider-row" key={key}>
             <div className="sim-slider-label">
               <span>{label}</span>
               <strong>
-                {reading[key].toFixed(1)} {unit}
+                {Number(currentValue).toFixed(1)} {unit}
               </strong>
             </div>
             <input
               type="range"
-              className="sim-slider"
+              className="sim-slider no-drag"
               min={min}
               max={max}
               step={step}
-              value={reading[key]}
-              onChange={(event) =>
-                onChange({ ...reading, [key]: Number(event.target.value) })
-              }
+              value={currentValue}
+              onChange={(event) => {
+                if (handleUpdate) {
+                  handleUpdate({
+                    ...activeReading,
+                    [key]: Number(event.target.value),
+                  });
+                }
+              }}
               aria-label={`Simulated ${label}`}
             />
           </div>
         );
       })}
 
-      <button type="button" className="live-board-action-btn sim-stop-btn" onClick={onStop}>
-        Stop simulating
-      </button>
+      <div className="sim-board-footer no-drag">
+        <button
+          type="button"
+          className="live-board-action-btn sim-preset-reset-btn no-drag"
+          onClick={() => handleUpdate && handleUpdate(midpointReading())}
+          title="Reset all 4 perillas to baseline midpoint"
+        >
+          ↺ Reset Perillas
+        </button>
+      </div>
     </div>
   );
 }
