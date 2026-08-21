@@ -14,6 +14,7 @@ import { ThresholdPopover } from './components/ThresholdPopover/ThresholdPopover
 import { FeatureSpaceCard } from './components/FeatureSpaceCard/FeatureSpaceCard';
 import { QuantumCircuitSection } from './components/QuantumCircuitSection/QuantumCircuitSection';
 import { FeatureSpaceComparison } from './components/FeatureSpaceComparison/FeatureSpaceComparison';
+import { CloudBenchmarkSection } from './components/CloudBenchmarkSection/CloudBenchmarkSection';
 import { MethodologyNote } from './components/MethodologyNote/MethodologyNote';
 import { LiveBoardPanel } from './components/LiveBoardPanel/LiveBoardPanel';
 
@@ -263,6 +264,8 @@ export default function App() {
         aucDelta={aucDelta}
         falseAlarmReduction={falseAlarmReduction}
       />
+
+      <CloudBenchmarkSection />
 
       <MethodologyNote />
     </div>
