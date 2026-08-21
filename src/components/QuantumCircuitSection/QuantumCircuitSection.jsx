@@ -1,24 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import { CloudBenchmarkSection } from '../CloudBenchmarkSection/CloudBenchmarkSection';
 
-export function QuantumCircuitSection({
-  circuitOpen,
-  onToggle,
-  rawCorrelation = 0.72,
-  quantumCorrelation = 0.24,
-  aucDelta = 18.4,
-  falseAlarmReduction = 75,
-  topFeatures = ['⟨Z₀Z₁⟩', '⟨Z₁Z₂⟩'],
-}) {
+export function QuantumCircuitSection({ circuitOpen, onToggle }) {
   const [isExecuting, setIsExecuting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [hasExecuted, setHasExecuted] = useState(false);
   const [stageText, setStageText] = useState('');
   const intervalRef = useRef(null);
-
-  const redundancyReduction =
-    rawCorrelation > 0
-      ? Math.round(((rawCorrelation - quantumCorrelation) / rawCorrelation) * 100)
-      : 67;
 
   const startExecution = () => {
     setIsExecuting(true);
@@ -143,57 +131,7 @@ export function QuantumCircuitSection({
                 </p>
               </div>
 
-              <div className="kq-aha-grid">
-                {/* Result Card #1 */}
-                <div className="kq-aha-card kq-aha-card-primary">
-                  <div className="kq-aha-badge">
-                    <span className="kq-aha-num">#1</span> KEY RESULT • ANOMALY SEPARATION
-                  </div>
-                  <h4 className="kq-aha-title">
-                    Separating Hidden Mechanical Failures Invisible to Classical Telemetry
-                  </h4>
-
-                  <div className="kq-metrics-row">
-                    <div className="kq-metric-pill">
-                      <span className="kq-metric-val mono-val">+{aucDelta.toFixed(1)} pts</span>
-                      <span className="kq-metric-lbl">ROC-AUC Discrimination</span>
-                    </div>
-                    <div className="kq-metric-pill">
-                      <span className="kq-metric-val mono-val">−{falseAlarmReduction.toFixed(0)}%</span>
-                      <span className="kq-metric-lbl">False Alarms Avoided</span>
-                    </div>
-                  </div>
-
-                  <p className="kq-aha-desc">
-                    In classical 2D sensor space (e.g. <em>Hoist Load</em> vs <em>Crowd Vibration</em>), normal high-stress excavation cycles and critical structural fatigue overlap significantly. The DQFE algorithm maps these non-linear interactions into multi-body observables (<strong>{topFeatures[0]}</strong> & <strong>{topFeatures[1]}</strong>), establishing a clean separation boundary that detects early failure signatures with zero false alarms.
-                  </p>
-                </div>
-
-                {/* Result Card #2 */}
-                <div className="kq-aha-card kq-aha-card-secondary">
-                  <div className="kq-aha-badge">
-                    <span className="kq-aha-num">#2</span> KEY RESULT • SIGNAL DECORRELATION
-                  </div>
-                  <h4 className="kq-aha-title">
-                    3.5× Feature Expansion with −{redundancyReduction}% Redundancy Drop
-                  </h4>
-
-                  <div className="kq-metrics-row">
-                    <div className="kq-metric-pill">
-                      <span className="kq-metric-val mono-val">4 → 14</span>
-                      <span className="kq-metric-lbl">Quantum Observables</span>
-                    </div>
-                    <div className="kq-metric-pill">
-                      <span className="kq-metric-val mono-val">{rawCorrelation.toFixed(2)} → {quantumCorrelation.toFixed(2)}</span>
-                      <span className="kq-metric-lbl">Average Collinearity |ρ|</span>
-                    </div>
-                  </div>
-
-                  <p className="kq-aha-desc">
-                    Physical telemetry signals are heavily coupled by cyclic machine operations, causing ~72% mutual redundancy. The counterdiabatic quantum feature map decodes orthogonal multi-body observables, removing repetitive collinear noise and providing downstream predictive models with high-entropy indicators up to 48 hours earlier.
-                  </p>
-                </div>
-              </div>
+              <CloudBenchmarkSection />
             </div>
           )}
         </div>

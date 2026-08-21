@@ -5,6 +5,7 @@ import kipuCloudModel from '../../data/kipuCloudModel.json' with { type: 'json' 
 export function CloudBenchmarkSection() {
   const [activeTab, setActiveTab] = useState('pr_curves');
   const [modalImage, setModalImage] = useState(null);
+  const [plotsOpen, setPlotsOpen] = useState(false);
 
   const metrics = kipuCloudModel.cloudMetrics || {};
   const apRaw = (metrics.armAveragePrecision?.raw ?? 0.3451) * 100;
@@ -141,60 +142,71 @@ export function CloudBenchmarkSection() {
         </div>
       </div>
 
-      {/* Real Cloud Plot Visualizer */}
-      <div className="cloud-visualizer-container">
-        <div className="visualizer-tabs-bar">
-          <div className="visualizer-tabs">
+      {/* Real Cloud Plot Visualizer — collapsed by default, plots take a lot of space */}
+      <button
+        type="button"
+        className="plots-toggle-btn"
+        onClick={() => setPlotsOpen((open) => !open)}
+        aria-expanded={plotsOpen}
+      >
+        {plotsOpen ? '▲ Hide Plots & Correlation Matrices' : '▼ Show Plots & Correlation Matrices'}
+      </button>
+
+      {plotsOpen && (
+        <div className="cloud-visualizer-container">
+          <div className="visualizer-tabs-bar">
+            <div className="visualizer-tabs">
+              <button
+                type="button"
+                className={`viz-tab-btn ${activeTab === 'pr_curves' ? 'active' : ''}`}
+                onClick={() => setActiveTab('pr_curves')}
+              >
+                📈 Precision-Recall Curves (15 Folds)
+              </button>
+              <button
+                type="button"
+                className={`viz-tab-btn ${activeTab === 'matrix_quantum' ? 'active' : ''}`}
+                onClick={() => setActiveTab('matrix_quantum')}
+              >
+                ⚛️ Quantum Features & Fisher Scores
+              </button>
+              <button
+                type="button"
+                className={`viz-tab-btn ${activeTab === 'matrix_classical' ? 'active' : ''}`}
+                onClick={() => setActiveTab('matrix_classical')}
+              >
+                📊 Raw Sensor Matrix
+              </button>
+            </div>
+
             <button
               type="button"
-              className={`viz-tab-btn ${activeTab === 'pr_curves' ? 'active' : ''}`}
-              onClick={() => setActiveTab('pr_curves')}
+              className="expand-plot-btn"
+              onClick={() => setModalImage(currentArtifact.src)}
             >
-              📈 Precision-Recall Curves (15 Folds)
-            </button>
-            <button
-              type="button"
-              className={`viz-tab-btn ${activeTab === 'matrix_quantum' ? 'active' : ''}`}
-              onClick={() => setActiveTab('matrix_quantum')}
-            >
-              ⚛️ Quantum Features & Fisher Scores
-            </button>
-            <button
-              type="button"
-              className={`viz-tab-btn ${activeTab === 'matrix_classical' ? 'active' : ''}`}
-              onClick={() => setActiveTab('matrix_classical')}
-            >
-              📊 Raw Sensor Matrix
+              <ZoomIn size={14} /> Full Resolution
             </button>
           </div>
 
-          <button
-            type="button"
-            className="expand-plot-btn"
-            onClick={() => setModalImage(currentArtifact.src)}
-          >
-            <ZoomIn size={14} /> Full Resolution
-          </button>
-        </div>
+          <div className="visualizer-content-card">
+            <div className="plot-image-wrapper" onClick={() => setModalImage(currentArtifact.src)}>
+              <img
+                src={currentArtifact.src}
+                alt={currentArtifact.title}
+                className="cloud-plot-img"
+              />
+              <div className="plot-zoom-hint">
+                <ZoomIn size={16} /> Click to expand
+              </div>
+            </div>
 
-        <div className="visualizer-content-card">
-          <div className="plot-image-wrapper" onClick={() => setModalImage(currentArtifact.src)}>
-            <img
-              src={currentArtifact.src}
-              alt={currentArtifact.title}
-              className="cloud-plot-img"
-            />
-            <div className="plot-zoom-hint">
-              <ZoomIn size={16} /> Click to expand
+            <div className="plot-caption-box">
+              <div className="plot-caption-title">{currentArtifact.title}</div>
+              <p className="plot-caption-text">{currentArtifact.caption}</p>
             </div>
           </div>
-
-          <div className="plot-caption-box">
-            <div className="plot-caption-title">{currentArtifact.title}</div>
-            <p className="plot-caption-text">{currentArtifact.caption}</p>
-          </div>
         </div>
-      </div>
+      )}
 
       {/* Modal for full size view */}
       {modalImage && (
