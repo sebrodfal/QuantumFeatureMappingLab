@@ -34,15 +34,10 @@ async function downloadFile(file) {
     const bytes = await res.bytes();
     const buf = Buffer.from(bytes);
 
-    const destLocal = path.join(ARTIFACTS_DIR, file.name);
-    fs.writeFileSync(destLocal, buf);
-
-    if (file.name.endsWith('.png') || file.name.endsWith('.json')) {
-      const destPublic = path.join(PUBLIC_DIR, file.name);
-      fs.writeFileSync(destPublic, buf);
-    }
+    const destPublic = path.join(PUBLIC_DIR, file.name);
+    fs.writeFileSync(destPublic, buf);
     console.log(` 📥 Downloaded: ${file.name} (${(buf.length / 1024).toFixed(1)} KB)`);
-    return destLocal;
+    return destPublic;
   } catch (err) {
     console.warn(` ⚠️ Could not download ${file.name}:`, err.message);
     return null;
