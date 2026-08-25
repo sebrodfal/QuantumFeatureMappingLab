@@ -45,22 +45,20 @@ export function FeatureSpaceCard({
                 }}
               >
                 {variant === 'classical'
-                  ? 'Source Variables: 4 (4 × 4)'
-                  : 'Derived Quantum Features: 14 (14 × 14)'}
+                  ? `Source Variables: ${heatmap.matrix.length} (${heatmap.matrix.length} × ${heatmap.matrix.length})`
+                  : `Derived Quantum Features: ${heatmap.matrix.length} (${heatmap.matrix.length} × ${heatmap.matrix.length})`}
               </span>
             </div>
             <div className="heatmap-subtitle">
               {variant === 'classical'
-                ? 'Correlation structure across 4 original telemetry signals'
-                : 'Correlation structure across 14 derived quantum observables'}
+                ? `Correlation structure across ${heatmap.matrix.length} original telemetry signals`
+                : `Correlation structure across ${heatmap.matrix.length} derived quantum observables`}
             </div>
           </div>
           <div
             className="heatmap-average-correlation"
             style={{ color: correlation.color }}
           >
-            <span>Avg. |ρ|</span>
-            <strong>{correlation.value.toFixed(2)}</strong>
           </div>
         </div>
 
@@ -100,9 +98,6 @@ export function FeatureSpaceCard({
 
       <div className="metric-box">
         <div className="small-label">{metric.label}</div>
-        <div className="metric-value" style={{ color: metric.color }}>
-          Avg. Redundancy |ρ|: {correlation.value.toFixed(2)}
-        </div>
         <div className="metric-description">{metric.description}</div>
       </div>
 

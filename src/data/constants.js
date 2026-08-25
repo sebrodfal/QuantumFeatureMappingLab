@@ -30,18 +30,21 @@ export const RAW = ['Hoist Load', 'Crowd Vib.', 'Drive Temp.', 'Cable Tension'];
 export const UNITS = ['kN', 'mm/s', '°C', 'MPa'];
 
 export const QNAMES = [
+  '⟨Z₀⟩ (Hoist Load)',
+  '⟨Z₁⟩ (Crowd Vib)',
+  '⟨Z₂⟩ (Drive Temp)',
+  '⟨Z₃⟩ (Cable Tension)',
+  '⟨Z₀Z₁⟩ (Hoist × Crowd)',
+  '⟨Z₁Z₂⟩ (Crowd × Temp)',
+  '⟨Z₁Z₃⟩ (Crowd × Tension)',
+];
+
+export const QNAMES_SHORT = [
   '⟨Z₀⟩',
   '⟨Z₁⟩',
   '⟨Z₂⟩',
   '⟨Z₃⟩',
-  '⟨X₀⟩',
-  '⟨X₁⟩',
-  '⟨X₂⟩',
-  '⟨X₃⟩',
   '⟨Z₀Z₁⟩',
-  '⟨Z₀Z₂⟩',
-  '⟨Z₀Z₃⟩',
   '⟨Z₁Z₂⟩',
   '⟨Z₁Z₃⟩',
-  '⟨Z₂Z₃⟩',
 ];

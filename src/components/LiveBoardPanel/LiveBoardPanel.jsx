@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ModeSwitch } from './ModeSwitch';
 import { SimulatedBoardPanel } from './SimulatedBoardPanel';
+import { useDraggable } from '../../hooks/useDraggable';
 
 const STATUS_LABEL = {
   disconnected: 'Disconnected',
@@ -13,15 +14,8 @@ const TRUTH_LABEL = { healthy: 'HEALTHY', deviation: 'DEVIATION' };
 
 /* Floating panel for driving "live mode" — either from the real ESP32
    board over WebSocket, or from on-screen sliders standing in for the
-   potentiometers (docs/demo-fisico-spec.md §4, §7.3, plus the slider
-   simulation added for demoing the concept without hardware). Mirrors
-   StickyControls' floating button pattern but sits on the opposite corner
-   so both can be open at once. Purely a thin UI over useLiveBoard() — all
-   scoring happens in liveScore.js, this component only displays it.
-
-   Layout: the classical/quantum switch is the hero element (what a booth
-   visitor actually interacts with); the input source (board vs. sliders)
-   is a secondary tab underneath it. */
+   potentiometers. Fully draggable and movable across the viewport so it
+   never blocks machine telemetry or feature space visualizations. */
 export function LiveBoardPanel({ liveBoard }) {
   const {
     status,
@@ -43,12 +37,47 @@ export function LiveBoardPanel({ liveBoard }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [urlInput, setUrlInput] = useState(url);
   const [activeTab, setActiveTab] = useState('simulate'); // 'simulate' | 'board'
+  const containerRef = useRef(null);
+
+  const { panelRef, position, isDragging, dragHandleProps } = useDraggable();
 
   const isBusy = status === 'connected' || status === 'connecting';
   const isAutoMode = Boolean(reading?.mode);
 
+  // Close when clicking outside the expanded panel (unless dragging)
+  useEffect(() => {
+    if (!isExpanded || isDragging) return undefined;
+
+    const handleClickOutside = (event) => {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target) &&
+        containerRef.current &&
+        !containerRef.current.contains(event.target) &&
+        !event.target.closest('.live-board-fixed-btn')
+      ) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isExpanded, isDragging, panelRef]);
+
+  const panelStyle = position
+    ? {
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        right: 'auto',
+        bottom: 'auto',
+        margin: 0,
+        zIndex: 10001,
+      }
+    : undefined;
+
   return (
-    <div className="live-board-container">
+    <div className="live-board-container" ref={containerRef}>
       {!isExpanded ? (
         <button
           type="button"
@@ -64,15 +93,21 @@ export function LiveBoardPanel({ liveBoard }) {
           <span className="btn-arrow">▲</span>
         </button>
       ) : (
-        <section className="card controls floating-full-panel live-board-panel">
-          <div className="panel-top-bar">
+        <section
+          ref={panelRef}
+          style={panelStyle}
+          className={`card controls floating-full-panel live-board-panel live-board-movable ${isDragging ? 'is-dragging' : ''}`}
+        >
+          <div className="panel-top-bar" {...dragHandleProps}>
             <div className="panel-top-title">
+              <span className="drag-handle-grip" title="Click and drag to move panel">⠿</span>
               <span className="title-icon">📡</span>
               <strong>Physical Board — Live Mode</strong>
+              <span className="drag-hint-badge">drag to move</span>
             </div>
             <button
               type="button"
-              className="panel-close-btn"
+              className="panel-close-btn no-drag"
               onClick={() => setIsExpanded(false)}
               aria-label="Close Live Board panel"
             >
@@ -110,51 +145,31 @@ export function LiveBoardPanel({ liveBoard }) {
                     </span>
                   </div>
                 ) : (
-                  <p className="live-board-hint">
-                    This reading doesn't match a staged scenario — showing predictions only, no known truth to compare against.
-                  </p>
+                  <div className="live-board-status-row">
+                    <span>Active Decision:</span>
+                    <strong className={result[`${activeMode}Alert`] ? 'alert-active' : 'alert-healthy'}>
+                      {result[`${activeMode}Alert`] ? 'ALERT ACTIVE' : 'ALL CLEAR'}
+                    </strong>
+                  </div>
                 )}
-
-                <div className="live-board-verdict-row">
-                  <span className={result.classicalAlert ? 'live-badge is-alert' : 'live-badge is-ok'}>
-                    Classical: {result.classicalAlert ? 'ALERT' : 'OK'} ({result.classicalScore.toFixed(2)})
-                    {stagedMatch && (
-                      <span className="correctness-mark">
-                        {(result.classicalAlert ? 'deviation' : 'healthy') === stagedMatch.knownTruth
-                          ? ' ✓'
-                          : ' ✗'}
-                      </span>
-                    )}
-                  </span>
-                  <span className={result.quantumAlert ? 'live-badge is-alert' : 'live-badge is-ok'}>
-                    Quantum: {result.quantumAlert ? 'ALERT' : 'OK'} ({result.quantumScore.toFixed(2)})
-                    {stagedMatch && (
-                      <span className="correctness-mark">
-                        {(result.quantumAlert ? 'deviation' : 'healthy') === stagedMatch.knownTruth
-                          ? ' ✓'
-                          : ' ✗'}
-                      </span>
-                    )}
-                  </span>
-                </div>
               </div>
             )}
 
             <div className="live-board-section">
-              <div className="input-source-tabs">
+              <div className="live-board-tabs no-drag">
                 <button
                   type="button"
-                  className={activeTab === 'simulate' ? 'active' : ''}
+                  className={`live-board-tab-btn ${activeTab === 'simulate' ? 'active' : ''}`}
                   onClick={() => setActiveTab('simulate')}
                 >
-                  🎚️ Simulate perillas
+                  🎚️ Simulate Knobs
                 </button>
                 <button
                   type="button"
-                  className={activeTab === 'board' ? 'active' : ''}
+                  className={`live-board-tab-btn ${activeTab === 'board' ? 'active' : ''}`}
                   onClick={() => setActiveTab('board')}
                 >
-                  🔌 Real board
+                  🔌 Real board (WS)
                 </button>
               </div>
 
@@ -162,50 +177,31 @@ export function LiveBoardPanel({ liveBoard }) {
                 <SimulatedBoardPanel
                   isSimulating={isSimulating}
                   reading={reading}
+                  result={result}
                   onStart={startSimulation}
-                  onChange={updateSimulation}
                   onStop={stopSimulation}
+                  onUpdate={updateSimulation}
                 />
               ) : (
-                <div className="live-board-connection">
-                  <div className="small-label">ESP32 WebSocket URL</div>
+                <div className="live-board-ws-controls">
                   <div className="live-board-url-row">
                     <input
                       type="text"
                       className="live-board-url-input"
                       value={urlInput}
-                      onChange={(event) => setUrlInput(event.target.value)}
+                      onChange={(e) => setUrlInput(e.target.value)}
                       placeholder="ws://192.168.4.1/ws"
                       disabled={isBusy}
                     />
-                    {isBusy ? (
-                      <button type="button" className="live-board-action-btn" onClick={disconnect}>
-                        Disconnect
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="live-board-action-btn"
-                        onClick={() => connect(urlInput)}
-                      >
-                        Connect
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className={`live-board-action-btn ${isBusy ? 'live-board-disconnect-btn' : ''}`}
+                      onClick={() => (isBusy ? disconnect() : connect(urlInput))}
+                    >
+                      {isBusy ? 'Disconnect' : 'Connect'}
+                    </button>
                   </div>
-                  <div className={`live-board-status live-status-${status}`}>
-                    <span className={`live-status-dot live-status-${status}`} />
-                    {STATUS_LABEL[status]}
-                    {lastError && <span className="live-board-error"> — {lastError}</span>}
-                  </div>
-
-                  {reading && status === 'connected' && (
-                    <div className="live-board-reading-grid">
-                      <span>Hoist Load: {reading.hoistLoad.toFixed(1)} kN</span>
-                      <span>Crowd Vib.: {reading.crowdVib.toFixed(1)} mm/s</span>
-                      <span>Drive Temp.: {reading.driveTemp.toFixed(1)} °C</span>
-                      <span>Cable Tension: {reading.cableTension.toFixed(1)} MPa</span>
-                    </div>
-                  )}
+                  {lastError && <div className="live-board-error-msg">{lastError}</div>}
                 </div>
               )}
             </div>

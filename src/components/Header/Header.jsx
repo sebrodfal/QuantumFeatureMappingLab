@@ -1,24 +1,38 @@
 import { useState } from 'react';
 
 export function Header() {
-  const [logoError, setLogoError] = useState(false);
+  const [nttLogoError, setNttLogoError] = useState(false);
+  const [kipuLogoError, setKipuLogoError] = useState(false);
 
   return (
     <header className="header">
       <div>
         <div className="brand-container">
-          {!logoError ? (
-            <img
-              src="/nttdata-logo.png"
-              alt="NTT DATA"
-              className="brand-logo-img"
-              onError={() => setLogoError(true)}
-            />
-          ) : (
-            <div className="brand">NTT DATA</div>
-          )}
+          <div className="brand-logos-row">
+            {!nttLogoError ? (
+              <img
+                src="/nttdata-logo.png"
+                alt="NTT DATA"
+                className="brand-logo-img ntt-logo"
+                onError={() => setNttLogoError(true)}
+              />
+            ) : (
+              <div className="brand">NTT DATA</div>
+            )}
+
+            {!kipuLogoError ? (
+              <img
+                src="/kipu-logo.png"
+                alt="Kipu Quantum"
+                className="brand-logo-img kipu-logo"
+                onError={() => setKipuLogoError(true)}
+              />
+            ) : (
+              <div className="brand brand-kipu">KIPU QUANTUM</div>
+            )}
+          </div>
         </div>
-        <h1>Digitalized Quantum Feature Extraction (DQFE)</h1>
+        <h1>Digitized Quantum Feature Extraction (DQFE)</h1>
       </div>
 
       <div className="subtitle">
@@ -28,3 +42,4 @@ export function Header() {
     </header>
   );
 }
+

@@ -7,6 +7,8 @@ export function SourceDataSection({
   selectedSensors,
   sensorColors,
   alert = false,
+  label = 0,
+  mode = 'quantum',
   liveMode = false,
   sensorDisplayValues = null,
 }) {
@@ -22,7 +24,7 @@ export function SourceDataSection({
       <div className="source-grid">
         <div>
           <span className="tag">Physical Asset: Electric Mining Rope Shovel</span>
-          <MachineDiagram alert={alert} />
+          <MachineDiagram alert={alert} label={label} mode={mode} />
         </div>
 
         <div>

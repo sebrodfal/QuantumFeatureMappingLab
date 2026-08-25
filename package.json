@@ -10,9 +10,18 @@
     "preview": "vite preview",
     "freeze-model": "node scripts/freezeModel.js",
     "find-curated-cases": "node scripts/findCuratedCases.js",
-    "mock-board": "node scripts/mockBoard.js"
+    "mock-board": "node scripts/mockBoard.js",
+    "generate-datapool": "node scripts/generateDatapool.js",
+    "kipu-datapool": "node scripts/kipuDatapool.js",
+    "kipu-inspect": "node scripts/inspectKipuService.js",
+    "kipu-submit": "node scripts/submitRimayJob.js",
+    "kipu-sync": "node scripts/syncKipuResults.js",
+    "kipu-rimay": "node scripts/submitRimayJob.js"
   },
   "dependencies": {
+    "@quantum-hub/qhub-api": "^2.4.0",
+    "@quantum-hub/qhub-service": "^1.8.2",
+    "dotenv": "^17.4.2",
     "lucide-react": "^1.28.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
