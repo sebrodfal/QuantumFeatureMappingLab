@@ -59,8 +59,6 @@ export function FeatureSpaceCard({
             className="heatmap-average-correlation"
             style={{ color: correlation.color }}
           >
-            <span>Avg. |ρ|</span>
-            <strong>{correlation.value.toFixed(2)}</strong>
           </div>
         </div>
 

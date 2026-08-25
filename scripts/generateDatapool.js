@@ -15,9 +15,9 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 
 console.log('Generating Mining Shovel Telemetry in Rimay data.json format...');
 
-// 1. Generate Training (500 samples) & Testing (220 samples) datasets
-const trainRaw = genData(500, 1.0, 42);
-const testRaw = genData(220, 1.0, 7);
+// 1. Generate Training (2000 samples) & Testing (1000 samples) datasets (matches Kipu Hub 3000-sample run)
+const trainRaw = genData(2000, 1.0, 42);
+const testRaw = genData(1000, 1.0, 7);
 
 const scaler = minmax(trainRaw.X);
 const trainScaled = scale(trainRaw.X, scaler);
