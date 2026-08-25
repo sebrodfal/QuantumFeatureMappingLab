@@ -3,7 +3,7 @@ import { Cloud, CheckCircle2, Cpu, BarChart3, Layers, ZoomIn, X, Activity } from
 import kipuCloudModel from '../../data/kipuCloudModel.json' with { type: 'json' };
 
 export function CloudBenchmarkSection() {
-  const [activeTab, setActiveTab] = useState('pr_curves');
+  const [activeTab, setActiveTab] = useState('matrix_quantum');
   const [modalImage, setModalImage] = useState(null);
   const [plotsOpen, setPlotsOpen] = useState(false);
 
@@ -16,13 +16,6 @@ export function CloudBenchmarkSection() {
   const executionId = kipuCloudModel.fitReference || '0d7c1df2-c72f-4244-827d-955e070a57f6';
 
   const artifacts = {
-    pr_curves: {
-      title: 'Precision-Recall Curves (15 Paired Folds)',
-      tag: 'Classification Performance',
-      src: '/cloud_artifacts/pr_curves-20260821T132724Z-675881.png',
-      caption:
-        'Evaluation across 15 paired folds (mean ± 1 SD band). The Hybrid DQFE pipeline (dark blue) and Quantum pipeline (light blue) dramatically outperform raw sensor inputs (orange dashed) across all recall thresholds, achieving AP 0.728 vs 0.345.',
-    },
     matrix_quantum: {
       title: 'Quantum Feature Observables & Fisher Score',
       tag: 'Derived Hilbert Space Observables',
@@ -36,6 +29,13 @@ export function CloudBenchmarkSection() {
       src: '/cloud_artifacts/matrix_classical-20260821T132724Z-675881.png',
       caption:
         'Baseline 4×4 sensor correlation matrix for cable tension, crowd vibration, hoist load, and drive temperature (average |ρ| = 0.018).',
+    },
+    pr_curves: {
+      title: 'Precision-Recall Curves (15 Paired Folds)',
+      tag: 'Classification Performance',
+      src: '/cloud_artifacts/pr_curves-20260821T132724Z-675881.png',
+      caption:
+        'Evaluation across 15 paired folds (mean ± 1 SD band). The Hybrid DQFE pipeline (dark blue) and Quantum pipeline (light blue) dramatically outperform raw sensor inputs (orange dashed) across all recall thresholds, achieving AP 0.728 vs 0.345.',
     },
   };
 
@@ -61,7 +61,7 @@ export function CloudBenchmarkSection() {
             </span>
           </div>
           <h2 className="section-title" style={{ marginTop: 8 }}>
-            4. Real Cloud Solver Benchmark & Empirical Evidence
+            Real Cloud Solver Benchmark & Empirical Evidence
           </h2>
           <p className="section-description">
             Live results from batch quantum feature extraction executed on Kipu Quantum Hub using 3,000 industrial mining shovel records (2,000 train / 1,000 test, 15 paired cross-validation folds).
@@ -158,13 +158,6 @@ export function CloudBenchmarkSection() {
             <div className="visualizer-tabs">
               <button
                 type="button"
-                className={`viz-tab-btn ${activeTab === 'pr_curves' ? 'active' : ''}`}
-                onClick={() => setActiveTab('pr_curves')}
-              >
-                📈 Precision-Recall Curves (15 Folds)
-              </button>
-              <button
-                type="button"
                 className={`viz-tab-btn ${activeTab === 'matrix_quantum' ? 'active' : ''}`}
                 onClick={() => setActiveTab('matrix_quantum')}
               >
@@ -176,6 +169,13 @@ export function CloudBenchmarkSection() {
                 onClick={() => setActiveTab('matrix_classical')}
               >
                 📊 Raw Sensor Matrix
+              </button>
+              <button
+                type="button"
+                className={`viz-tab-btn ${activeTab === 'pr_curves' ? 'active' : ''}`}
+                onClick={() => setActiveTab('pr_curves')}
+              >
+                📈 Precision-Recall Curves (15 Folds)
               </button>
             </div>
 

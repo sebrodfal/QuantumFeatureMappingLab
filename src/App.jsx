@@ -186,7 +186,7 @@ export default function App() {
     })),
     chipCaption:
       '7 derived quantum features (single-body and 2-body interaction observables), extracted by Rimay DQFE from the four physical signals.',
-    heatmap: { matrix: R.quantum.corr, labels: QNAMES_SHORT, showValues: false },
+    heatmap: { matrix: R.quantum.corr, labels: QNAMES_SHORT, showValues: true },
     scatter: {
       accent: C.quantum,
       xLabel: QNAMES[featureA],

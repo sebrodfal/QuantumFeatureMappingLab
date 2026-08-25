@@ -60,16 +60,16 @@ export function SimulatedBoardPanel({
         <div className="sim-snap-info-box no-drag">
           <div className="sim-snap-header">
             <span className="sim-snap-badge">
-              📍 Snapped: Caso Real Kipu #{result.recordId}
+              📍 Snapped: Real Kipu Case #{result.recordId}
             </span>
             <span className="sim-snap-similarity">
-              {result.similarity}% Coincidencia
+              {result.similarity}% Match
             </span>
           </div>
           <div className="sim-snap-detail">
             <span className="sim-snap-label">Ground Truth:</span>
             <strong className={result.label === 1 ? 'is-anomaly' : 'is-healthy'}>
-              {result.label === 1 ? '⚠️ DEVIATION (Fallo Real)' : '✓ HEALTHY (Normal)'}
+              {result.label === 1 ? '⚠️ DEVIATION (Real Anomaly)' : '✓ HEALTHY (Normal)'}
             </strong>
           </div>
         </div>
@@ -114,9 +114,9 @@ export function SimulatedBoardPanel({
           type="button"
           className="live-board-action-btn sim-preset-reset-btn no-drag"
           onClick={() => handleUpdate && handleUpdate(midpointReading())}
-          title="Reset all 4 perillas to baseline midpoint"
+          title="Reset all 4 knobs to baseline midpoint"
         >
-          ↺ Reset Perillas
+          ↺ Reset Knobs
         </button>
       </div>
     </div>

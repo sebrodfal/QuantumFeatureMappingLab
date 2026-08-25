@@ -2,7 +2,7 @@ import { SignalLine } from './SignalLine';
 
 /* displayText, when given, overrides the default "scaled-value-as-percent"
    readout — used when Section 1 is driven by the Live Board (real or
-   simulated perillas) to show real units (e.g. "437.5 kN") instead of the
+   simulated knobs) to show real units (e.g. "437.5 kN") instead of the
    synthetic dataset's 0-100 convention. `value` still drives the
    SignalLine animation either way, since that only needs a roughly-[0,1]
    number, not a real unit. */

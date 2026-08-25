@@ -15,16 +15,7 @@ export const STAGED_SCENARIOS = [
       'Real deviation (Record #36). Moderate load & abnormal tension detected by quantum observables; classical linear detector stays quiet.',
     reviewed: true,
   },
-  {
-    id: 'quantum-catches-2',
-    recordId: 59,
-    label: 'Quantum flags anomaly (Subtle correlation)',
-    reading: { hoistLoad: 176.3, crowdVib: 13.6, driveTemp: 45.8, cableTension: 186.9 },
-    knownTruth: 'deviation',
-    narrative:
-      'Subtle deviation pattern (Record #59). Quantum feature mapping surfaces non-linear coupling missed by raw sensor channels.',
-    reviewed: true,
-  },
+
   {
     id: 'classical-false-alarm-1',
     recordId: 4,

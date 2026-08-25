@@ -162,7 +162,7 @@ export function LiveBoardPanel({ liveBoard }) {
                   className={`live-board-tab-btn ${activeTab === 'simulate' ? 'active' : ''}`}
                   onClick={() => setActiveTab('simulate')}
                 >
-                  🎚️ Simulate perillas
+                  🎚️ Simulate Knobs
                 </button>
                 <button
                   type="button"

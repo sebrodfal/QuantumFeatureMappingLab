@@ -791,8 +791,9 @@ input[type="range"] {
 }
 
 .heatmap-matrix-viewport {
-  width: min(100%, 330px);
-  height: 300px;
+  width: 100%;
+  max-width: 440px;
+  min-height: 360px;
   margin: 16px auto;
   display: flex;
   align-items: center;
@@ -802,8 +803,8 @@ input[type="range"] {
 
 @media (min-width: 1300px) {
   .heatmap-matrix-viewport {
-    width: min(100%, 350px);
-    height: 320px;
+    max-width: 480px;
+    min-height: 390px;
     flex: 1;
   }
 }
@@ -2062,7 +2063,7 @@ input[type="range"] {
   background: rgba(139, 233, 253, 0.12);
 }
 
-/* --- Simulated board (on-screen perillas) --- */
+/* --- Simulated board (on-screen knobs) --- */
 .sim-board-start {
   text-align: center;
 }

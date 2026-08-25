@@ -32,7 +32,7 @@ export function Header() {
             )}
           </div>
         </div>
-        <h1>Digitalized Quantum Feature Extraction (DQFE)</h1>
+        <h1>Digitized Quantum Feature Extraction (DQFE)</h1>
       </div>
 
       <div className="subtitle">
