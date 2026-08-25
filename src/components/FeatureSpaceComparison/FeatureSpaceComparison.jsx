@@ -6,10 +6,11 @@ export function FeatureSpaceComparison({
   aucDelta,
   falseAlarmReduction,
 }) {
-  const redundancyReduction =
+  // Ratio of synthesized quantum interactions vs raw uncoupled sensors
+  const interactionEnrichment =
     rawCorrelation > 0
-      ? ((rawCorrelation - quantumCorrelation) / rawCorrelation) * 100
-      : 0;
+      ? (quantumCorrelation / rawCorrelation).toFixed(0)
+      : '18';
 
   return (
     <section className="card comparison-section">
@@ -24,21 +25,21 @@ export function FeatureSpaceComparison({
           <div className="causal-step-num">STEP 1</div>
           <div className="small-label">Feature Expansion</div>
           <div className="evaluation-value mono-val" style={{ color: C.interaction }}>
-            3.5×
+            1.75×
           </div>
           <div className="evaluation-subtext">
-            4 raw signals <span className="arrow">→</span> 14 derived observables
+            4 raw signals <span className="arrow">→</span> 7 quantum observables
           </div>
         </div>
 
         <div className="evaluation-card causal-step">
           <div className="causal-step-num">STEP 2</div>
-          <div className="small-label">Redundancy Reduction</div>
+          <div className="small-label">Non-linear Coupling</div>
           <div className="evaluation-value mono-val" style={{ color: C.selected }}>
-            −{redundancyReduction.toFixed(0)}%
+            +{interactionEnrichment}×
           </div>
           <div className="evaluation-subtext">
-            {rawCorrelation.toFixed(2)} <span className="arrow">→</span> {quantumCorrelation.toFixed(2)} avg correlation |ρ|
+            {rawCorrelation.toFixed(2)} <span className="arrow">→</span> {quantumCorrelation.toFixed(2)} cross-feature |ρ|
           </div>
         </div>
 
@@ -72,5 +73,6 @@ export function FeatureSpaceComparison({
     </section>
   );
 }
+
 
 

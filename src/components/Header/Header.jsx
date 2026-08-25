@@ -30,11 +30,6 @@ export function Header() {
             ) : (
               <div className="brand brand-kipu">KIPU QUANTUM</div>
             )}
-
-            <a href="#cloud-benchmark" className="cloud-verified-pill" style={{ textDecoration: 'none' }}>
-              <span className="live-status-dot" style={{ width: 7, height: 7, borderRadius: '50%', background: '#00E5FF', display: 'inline-block', boxShadow: '0 0 8px #00E5FF' }} />
-              Cloud Solver Verified · +38.3% AP
-            </a>
           </div>
         </div>
         <h1>Digitalized Quantum Feature Extraction (DQFE)</h1>

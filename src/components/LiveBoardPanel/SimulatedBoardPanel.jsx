@@ -19,11 +19,11 @@ export function midpointReading() {
 
 /* On-screen stand-in for the physical potentiometers — drag a slider and it
    drives the same scoring path a real board message would (useLiveBoard's
-   applyReading). Meant for showing the concept in a meeting, without
-   waiting for hardware or for scripts/mockBoard.js's auto-cycling timer. */
+   applyReading). Automatically snaps to the closest of the 1000 real Kipu test records. */
 export function SimulatedBoardPanel({
   isSimulating,
   reading,
+  result,
   onStart,
   onChange,
   onUpdate,
@@ -55,6 +55,25 @@ export function SimulatedBoardPanel({
           </button>
         ))}
       </div>
+
+      {result?.matchedRecord && (
+        <div className="sim-snap-info-box no-drag">
+          <div className="sim-snap-header">
+            <span className="sim-snap-badge">
+              📍 Snapped: Caso Real Kipu #{result.recordId}
+            </span>
+            <span className="sim-snap-similarity">
+              {result.similarity}% Coincidencia
+            </span>
+          </div>
+          <div className="sim-snap-detail">
+            <span className="sim-snap-label">Ground Truth:</span>
+            <strong className={result.label === 1 ? 'is-anomaly' : 'is-healthy'}>
+              {result.label === 1 ? '⚠️ DEVIATION (Fallo Real)' : '✓ HEALTHY (Normal)'}
+            </strong>
+          </div>
+        </div>
+      )}
 
       {SLIDER_FIELDS.map(({ key, label }) => {
         const { min, max, unit } = PHYSICAL_RANGES[key];
@@ -103,3 +122,4 @@ export function SimulatedBoardPanel({
     </div>
   );
 }
+

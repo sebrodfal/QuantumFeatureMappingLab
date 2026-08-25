@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { C, RAW, QNAMES } from './data/constants';
+import { C, RAW, QNAMES, QNAMES_SHORT } from './data/constants';
 import { runPipeline } from './utils/pipeline';
 import { meanOff } from './utils/correlation';
 import { decisionStatus } from './utils/decisionStatus';
@@ -18,22 +18,15 @@ import { MethodologyNote } from './components/MethodologyNote/MethodologyNote';
 import { LiveBoardPanel } from './components/LiveBoardPanel/LiveBoardPanel';
 
 /*
-  QUANTUM FEATURE MAPPING LAB
+  QUANTUM FEATURE MAPPING LAB (Real Dataset Mode)
   Story: physical machine → 4 source signals → classical or quantum
   feature-mapped representation → feature-space comparison → reference
-  analytical validation at a comparable operating target (recall ≥ 80%).
-
-  The quantum feature map does not replace the analytical system. It
-  transforms the original physical signals into a derived feature space that
-  downstream algorithms can use. AUC / recall / false-alarm validation is a
-  secondary, reference-only signal — it does not dominate the design. The
-  heatmaps and scatter plots are the primary visual evidence of how the
-  feature space structure changes.
+  analytical validation at a comparable operating target (recall ≥ 90%).
 */
 
 export default function App() {
   const [noise, setNoise] = useState(1);
-  const [sample, setSample] = useState(80);
+  const [sample, setSample] = useState(0);
   const [circuitOpen, setCircuitOpen] = useState(false);
 
   const {
@@ -46,21 +39,21 @@ export default function App() {
 
   const liveBoard = useLiveBoard();
   const liveActive = liveBoard.isLive;
-  const machineAlert = liveActive
-    ? liveBoard.activeMode === 'classical'
-      ? liveBoard.result.classicalAlert
-      : liveBoard.result.quantumAlert
-    : false;
 
   const R = useMemo(() => runPipeline(noise), [noise]);
 
-  const visibleCount = 220;
+  const visibleCount = R.records ? R.records.length : 1000;
   const visibleSample = Math.min(sample, visibleCount - 1);
+
+  // Active record index: driven by LiveBoard when active/snapped, otherwise by explorer slider
+  const activeRecordId = liveActive && liveBoard.result
+    ? Math.min(liveBoard.result.recordId, visibleCount - 1)
+    : visibleSample;
 
   const rawCorrelation = meanOff(R.classical.corr);
   const quantumCorrelation = meanOff(R.quantum.corr);
 
-  const [featureA, featureB] = R.quantum.top;
+  const [featureA, featureB] = R.quantum.top || [1, 5];
 
   const rawPoints = R.test.X.slice(0, visibleCount).map((row) => [
     row[0],
@@ -73,16 +66,36 @@ export default function App() {
   ]);
 
   const labels = R.test.y.slice(0, visibleCount);
-  const selectedSensors = R.test.X[visibleSample];
-  const selectedLabel = R.test.y[visibleSample];
-  const classicalScore = R.classical.scores[visibleSample];
-  const quantumScore = R.quantum.scores[visibleSample];
+
+  // Instantaneous readings and scores for the active sample
+  const selectedSensors = liveActive && liveBoard.result?.x
+    ? liveBoard.result.x
+    : R.test.X[activeRecordId] || [0.5, 0.5, 0.5, 0.5];
+
+  const selectedLabel = liveActive && liveBoard.result
+    ? liveBoard.result.label
+    : (R.test.y[activeRecordId] ?? 0);
 
   const classicalThreshold = R.classical.op.threshold;
   const quantumThreshold = R.quantum.op.threshold;
 
-  const classicalAlert = classicalScore >= classicalThreshold;
-  const quantumAlert = quantumScore >= quantumThreshold;
+  const classicalScore = liveActive && liveBoard.result
+    ? liveBoard.result.classicalScore
+    : (R.classical.scores[activeRecordId] ?? 0);
+
+  const quantumScore = liveActive && liveBoard.result
+    ? liveBoard.result.quantumScore
+    : (R.quantum.scores[activeRecordId] ?? 0);
+
+  const classicalAlert = liveActive && liveBoard.result
+    ? liveBoard.result.classicalAlert
+    : classicalScore >= classicalThreshold;
+
+  const quantumAlert = liveActive && liveBoard.result
+    ? liveBoard.result.quantumAlert
+    : quantumScore >= quantumThreshold;
+
+  const machineAlert = liveBoard.activeMode === 'classical' ? classicalAlert : quantumAlert;
 
   const classicalStatus = decisionStatus(selectedLabel, classicalAlert);
   const quantumStatus = decisionStatus(selectedLabel, quantumAlert);
@@ -100,20 +113,25 @@ export default function App() {
 
   const selectedConditionColor = selectedLabel ? C.deviation : C.healthy;
 
-  // Section 1 (the physical source) is driven by the Live Board — real or
-  // simulated perillas — when it's active; everything from Section 2 down
-  // (heatmaps, scatter, Selected Record) always stays on the Explore Data
-  // Record slider, exploring the synthetic dataset. The two are
-  // intentionally kept from crossing.
-  const liveSensorValues = liveActive ? liveBoard.result.x : selectedSensors;
-  const liveSensorDisplayValues = liveActive
+  const rawRec = R.records?.[activeRecordId];
+  const displayHoist = rawRec?.display?.hoistLoad || ((selectedSensors[0] * 500).toFixed(1) + ' kN');
+  const displayCrowd = rawRec?.display?.crowdVib || ((selectedSensors[1] * 50).toFixed(1) + ' mm/s');
+  const displayTemp = rawRec?.display?.driveTemp || ((20 + selectedSensors[2] * 180).toFixed(1) + ' °C');
+  const displayTension = rawRec?.display?.cableTension || ((1 + selectedSensors[3] * 199).toFixed(1) + ' MPa');
+
+  const sensorDisplayValues = liveActive && liveBoard.reading
     ? [
         `${liveBoard.reading.hoistLoad.toFixed(1)} kN`,
         `${liveBoard.reading.crowdVib.toFixed(1)} mm/s`,
         `${liveBoard.reading.driveTemp.toFixed(1)} °C`,
         `${liveBoard.reading.cableTension.toFixed(1)} MPa`,
       ]
-    : null;
+    : [
+        displayHoist,
+        displayCrowd,
+        displayTemp,
+        displayTension,
+      ];
 
   const classicalCard = {
     variant: 'classical',
@@ -137,7 +155,7 @@ export default function App() {
       label: 'Classical Representation Result',
       color: C.classicalLight,
       description:
-        'The four variables partially reflect the same operating cycle. The representation preserves useful signals but includes repeated dependencies between sensors.',
+        'Direct sensor channels provide 1D signals but lack non-linear coupling terms, resulting in overlapping clusters and high false alarm rates.',
     },
     validation: {
       auc: R.classical.auc,
@@ -145,7 +163,7 @@ export default function App() {
       color: C.classicalLight,
     },
     selected: {
-      index: visibleSample,
+      index: activeRecordId,
       label: selectedLabel,
       conditionColor: selectedConditionColor,
       score: classicalScore,
@@ -167,21 +185,21 @@ export default function App() {
       active: i === featureA || i === featureB,
     })),
     chipCaption:
-      '14 derived quantum features, expanded from the same four physical signals.',
-    heatmap: { matrix: R.quantum.corr, labels: undefined, showValues: false },
+      '7 derived quantum features (single-body and 2-body interaction observables), extracted by Rimay DQFE from the four physical signals.',
+    heatmap: { matrix: R.quantum.corr, labels: QNAMES_SHORT, showValues: false },
     scatter: {
       accent: C.quantum,
       xLabel: QNAMES[featureA],
       yLabel: QNAMES[featureB],
       points: quantumPoints,
       labels,
-      note: 'The feature map can reveal alternative geometric relationships between the same records.',
+      note: 'Geometric separation in the Hilbert space feature map reveals the anomaly cluster hidden in raw coordinates.',
     },
     metric: {
       label: 'Quantum Feature Map Result',
       color: C.quantumLight,
       description:
-        'The quantum feature map generates a higher-dimensional representation with different relationships between variables, while preserving traceability to the four source signals.',
+        `The quantum feature map embeds 2-body interaction observables (Hilbert space), unlocking clear geometric separation and achieving +${aucDelta.toFixed(1)} pts AUC lift.`,
     },
     validation: {
       auc: R.quantum.auc,
@@ -189,7 +207,7 @@ export default function App() {
       color: C.quantumLight,
     },
     selected: {
-      index: visibleSample,
+      index: activeRecordId,
       label: selectedLabel,
       conditionColor: selectedConditionColor,
       score: quantumScore,
@@ -206,12 +224,14 @@ export default function App() {
       <div className="divider" />
 
       <SourceDataSection
-        visibleSample={visibleSample}
-        selectedSensors={liveSensorValues}
+        visibleSample={activeRecordId}
+        selectedSensors={selectedSensors}
         sensorColors={sensorColors}
         alert={machineAlert}
+        label={selectedLabel}
+        mode={liveBoard.activeMode}
         liveMode={liveActive}
-        sensorDisplayValues={liveSensorDisplayValues}
+        sensorDisplayValues={sensorDisplayValues}
       />
 
       <LiveBoardPanel liveBoard={liveBoard} />

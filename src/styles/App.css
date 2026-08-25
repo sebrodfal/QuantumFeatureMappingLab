@@ -2091,6 +2091,67 @@ input[type="range"] {
   background: rgba(139, 233, 253, 0.18);
 }
 
+/* --- Snapped Real Kipu Record Feedback --- */
+.sim-snap-info-box {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.sim-snap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.sim-snap-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #00E5FF;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sim-snap-similarity {
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #8BE9FD;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+}
+
+.sim-snap-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+}
+
+.sim-snap-label {
+  color: #9EACC2;
+}
+
+.sim-snap-detail .is-anomaly {
+  color: #F87171;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sim-snap-detail .is-healthy {
+  color: #4ADE80;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+
 .sim-slider-row + .sim-slider-row { margin-top: 12px; }
 
 .sim-slider-label {

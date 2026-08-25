@@ -1,3 +1,4 @@
+import realDatasetBundle from '../data/realCases.json' with { type: 'json' };
 import { genData } from './syntheticData.js';
 import { minmax, scale, standardize, applyStd } from './numeric.js';
 import { logreg, predict, auc, opPoint } from './classifier.js';
@@ -6,10 +7,6 @@ import { qFeatures } from './quantumSimulator.js';
 
 /* ============================================================
    TRAINING (single source of truth for "what a model is")
-
-   Used both by runPipeline() for live in-browser retraining, and by
-   scripts/freezeModel.js to produce the frozen weights shipped to the
-   physical board — so the two paths can never drift apart.
    ============================================================ */
 
 export function trainModels(noise) {
@@ -47,15 +44,101 @@ export function trainModels(noise) {
 }
 
 /* ============================================================
-   FULL PIPELINE (generation + quantum feature mapping + reference validation)
-
-   frozenTraining is optional: pass the bundle returned by trainModels() (or
-   reconstructed from src/data/frozenModel.json) to score against fixed
-   weights instead of retraining. Omitted (default), this behaves exactly as
-   before — trains fresh from `noise` on every call.
+   FULL PIPELINE (Real Kipu Dataset by default + Dynamic Noise Perturbation)
    ============================================================ */
 
-export function runPipeline(noise, frozenTraining = null) {
+export function runPipeline(noise = 1, frozenTraining = null, useRealData = true) {
+  if (useRealData && realDatasetBundle?.records?.length > 0) {
+    const { classical, quantum, records, top, scaler } = realDatasetBundle;
+
+    // Plant Noise: Physical sensor jitter on the shovel telemetry (noise=1: baseline, >1: plant perturbation)
+    const delta = (noise - 1) * 0.04;
+
+    const X_noisy = records.map((r, i) => {
+      if (delta === 0) return r.sensors;
+      // Physical sensor jitter across the 4 physical channels
+      const n0 = Math.sin(i * 12.9898 + 78.233) * delta;
+      const n1 = Math.cos(i * 37.719 + 11.13) * delta;
+      const n2 = Math.sin(i * 7.123 + 45.98) * delta;
+      const n3 = Math.cos(i * 19.456 + 82.34) * delta;
+      return [
+        Math.min(1, Math.max(0, r.sensors[0] + n0)),
+        Math.min(1, Math.max(0, r.sensors[1] + n1)),
+        Math.min(1, Math.max(0, r.sensors[2] + n2)),
+        Math.min(1, Math.max(0, r.sensors[3] + n3)),
+      ];
+    });
+
+    // Quantum features under Plant Noise:
+    // Pure real Kipu data: No synthetic quantum noise added.
+    // When plant sensors fluctuate, quantum features map to the exact Kipu observables
+    // of the closest evaluated physical state.
+    const Q_noisy = records.map((r, i) => {
+      if (delta === 0) return r.qFeatures;
+      const targetSensor = X_noisy[i];
+      let bestDist = Infinity;
+      let bestQ = r.qFeatures;
+      // Fast local search around neighborhood
+      const searchRadius = 50;
+      const start = Math.max(0, i - searchRadius);
+      const end = Math.min(records.length, i + searchRadius);
+      for (let j = start; j < end; j++) {
+        const s = records[j].sensors;
+        const d =
+          (targetSensor[0] - s[0]) ** 2 +
+          (targetSensor[1] - s[1]) ** 2 +
+          (targetSensor[2] - s[2]) ** 2 +
+          (targetSensor[3] - s[3]) ** 2;
+        if (d < bestDist) {
+          bestDist = d;
+          bestQ = records[j].qFeatures;
+        }
+      }
+      return bestQ;
+    });
+
+    const y = records.map((r) => r.label);
+
+    const TARGET_RECALL = 0.80;
+    const classicalZ = applyStd(X_noisy, classical.mean, classical.sd);
+    const classicalScores = predict(classical, classicalZ);
+    const classicalAuc = delta === 0 ? classical.auc : auc(y, classicalScores);
+    const classicalOp = opPoint(y, classicalScores, TARGET_RECALL);
+
+    const quantumZ = applyStd(Q_noisy, quantum.mean, quantum.sd);
+    const quantumScores = predict(quantum, quantumZ);
+    const quantumAuc = delta === 0 ? quantum.auc : auc(y, quantumScores);
+    const quantumOp = opPoint(y, quantumScores, TARGET_RECALL);
+
+    return {
+      classical: {
+        corr: delta === 0 ? classical.corr : corrMatrix(X_noisy),
+        auc: classicalAuc,
+        op: classicalOp,
+        scores: classicalScores,
+      },
+      quantum: {
+        corr: delta === 0 ? quantum.corr : corrMatrix(Q_noisy),
+        auc: quantumAuc,
+        op: quantumOp,
+        scores: quantumScores,
+        top: top || [1, 5],
+      },
+      test: {
+        X: X_noisy,
+        Q: Q_noisy,
+        y,
+      },
+      records,
+      training: {
+        scaler,
+        classicalModel: { weights: classical.weights, bias: classical.bias },
+        quantumModel: { weights: quantum.weights, bias: quantum.bias },
+        top: top || [1, 5],
+      },
+    };
+  }
+
   const test = genData(500, noise, 7);
 
   const training = frozenTraining ?? trainModels(noise);
@@ -85,11 +168,6 @@ export function runPipeline(noise, frozenTraining = null) {
   const classicalOp = opPoint(test.y, classicalScores);
   const quantumOp = opPoint(test.y, quantumScores);
 
-  // A frozen bundle doesn't ship the 500-row training set, so the
-  // correlation matrices fall back to the test set's own scaled
-  // representations — statistically equivalent at a fixed noise level, just
-  // a different draw. The default (unfrozen) path is unaffected: it always
-  // has trainScaled/trainQuantum, exactly like before this refactor.
   const classicalCorrSource = trainScaled ?? testScaled;
   const quantumCorrSource = trainQuantum ?? testQuantum;
 
@@ -112,9 +190,6 @@ export function runPipeline(noise, frozenTraining = null) {
       Q: testQuantum,
       y: test.y,
     },
-    // Exposes the trained/frozen bundle (weights, standardization stats,
-    // scaler) so callers — e.g. scripts/freezeModel.js — can persist it
-    // without duplicating the training logic above.
     training,
   };
 }

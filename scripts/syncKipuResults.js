@@ -10,7 +10,6 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ARTIFACTS_DIR = path.resolve(__dirname, '../datapool_artifacts');
 const PUBLIC_DIR = path.resolve(__dirname, '../public/cloud_artifacts');
 const OUTPUT_MODEL_PATH = path.resolve(__dirname, '../src/data/kipuCloudModel.json');
 

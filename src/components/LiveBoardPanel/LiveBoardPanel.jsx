@@ -177,6 +177,7 @@ export function LiveBoardPanel({ liveBoard }) {
                 <SimulatedBoardPanel
                   isSimulating={isSimulating}
                   reading={reading}
+                  result={result}
                   onStart={startSimulation}
                   onStop={stopSimulation}
                   onUpdate={updateSimulation}
