@@ -16,6 +16,7 @@ export function FeatureSpaceCard({
   chipCaption,
   heatmap,
   scatter,
+  validation,
   selected,
 }) {
   const frameClass = `${variant}-frame`;
@@ -95,6 +96,32 @@ export function FeatureSpaceCard({
       />
 
       <div className="validation-card">
+        <div className="validation-global">
+          <div className="small-label">Global Validation</div>
+          <div className="global-metrics-row">
+            <div>
+              <div className="global-metric-label">AUC</div>
+              <div
+                className="global-metric-value"
+                style={{ color: validation.color }}
+              >
+                {validation.auc.toFixed(3)}
+              </div>
+            </div>
+            <div>
+              <div className="global-metric-label">False alarms</div>
+              <div
+                className="global-metric-value"
+                style={{ color: validation.color }}
+              >
+                {(validation.fpr * 100).toFixed(0)}%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="validation-divider" />
+
         <div className="selected-record-decision">
           <div className="selected-record-heading">
             <span className="small-label">
@@ -135,10 +162,6 @@ export function FeatureSpaceCard({
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="validation-note">
-          Threshold selected to detect at least 80% of known deviations.
         </div>
       </div>
     </section>
