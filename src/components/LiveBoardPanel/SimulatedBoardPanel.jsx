@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { PHYSICAL_RANGES } from '../../data/calibration.js';
 import { STAGED_SCENARIOS } from '../../data/stagedScenarios.js';
 
@@ -27,16 +27,32 @@ export function SimulatedBoardPanel({
   onStart,
   onChange,
   onUpdate,
-  _onStop,
+  onStop,
 }) {
   const handleUpdate = onChange || onUpdate;
+  const hasAutoStarted = useRef(false);
 
-  // Auto-initialize simulation if opened so sliders are immediately draggable
+  // Auto-initialize simulation once, the first time the panel is opened, so
+  // it shows a populated preview immediately. Fires only once (tracked via
+  // the ref, not just the isSimulating dependency) so that after the user
+  // explicitly exits via "Exit Simulation" below, it does not immediately
+  // restart itself.
   useEffect(() => {
-    if (!isSimulating && onStart) {
+    if (!hasAutoStarted.current && !isSimulating && onStart) {
+      hasAutoStarted.current = true;
       onStart(midpointReading());
     }
   }, [isSimulating, onStart]);
+
+  // Any interaction re-engages simulation if the user had exited it, so
+  // "Exit Simulation" isn't a dead end — dragging a slider again still works.
+  const engage = (nextReading) => {
+    if (!isSimulating && onStart) {
+      onStart(nextReading);
+    } else if (handleUpdate) {
+      handleUpdate(nextReading);
+    }
+  };
 
   const activeReading = reading || midpointReading();
 
@@ -49,7 +65,7 @@ export function SimulatedBoardPanel({
             type="button"
             className="sim-preset-btn no-drag"
             title={scenario.narrative}
-            onClick={() => handleUpdate && handleUpdate(scenario.reading)}
+            onClick={() => engage(scenario.reading)}
           >
             {scenario.label}
           </button>
@@ -96,12 +112,10 @@ export function SimulatedBoardPanel({
               step={step}
               value={currentValue}
               onChange={(event) => {
-                if (handleUpdate) {
-                  handleUpdate({
-                    ...activeReading,
-                    [key]: Number(event.target.value),
-                  });
-                }
+                engage({
+                  ...activeReading,
+                  [key]: Number(event.target.value),
+                });
               }}
               aria-label={`Simulated ${label}`}
             />
@@ -113,10 +127,18 @@ export function SimulatedBoardPanel({
         <button
           type="button"
           className="live-board-action-btn sim-preset-reset-btn no-drag"
-          onClick={() => handleUpdate && handleUpdate(midpointReading())}
+          onClick={() => engage(midpointReading())}
           title="Reset all 4 knobs to baseline midpoint"
         >
           ↺ Reset Knobs
+        </button>
+        <button
+          type="button"
+          className="live-board-action-btn no-drag"
+          onClick={() => onStop && onStop()}
+          title="Exit simulation and return to the record explorer slider"
+        >
+          ⏻ Exit Simulation
         </button>
       </div>
     </div>
