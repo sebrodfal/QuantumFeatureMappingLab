@@ -16,8 +16,6 @@ export function FeatureSpaceCard({
   chipCaption,
   heatmap,
   scatter,
-  metric,
-  validation,
   selected,
 }) {
   const frameClass = `${variant}-frame`;
@@ -96,38 +94,7 @@ export function FeatureSpaceCard({
         note={scatter.note}
       />
 
-      <div className="metric-box">
-        <div className="small-label">{metric.label}</div>
-        <div className="metric-description">{metric.description}</div>
-      </div>
-
       <div className="validation-card">
-        <div className="validation-global">
-          <div className="small-label">Global Validation</div>
-          <div className="global-metrics-row">
-            <div>
-              <div className="global-metric-label">AUC</div>
-              <div
-                className="global-metric-value"
-                style={{ color: validation.color }}
-              >
-                {validation.auc.toFixed(3)}
-              </div>
-            </div>
-            <div>
-              <div className="global-metric-label">False alarms</div>
-              <div
-                className="global-metric-value"
-                style={{ color: validation.color }}
-              >
-                {(validation.fpr * 100).toFixed(0)}%
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="validation-divider" />
-
         <div className="selected-record-decision">
           <div className="selected-record-heading">
             <span className="small-label">
