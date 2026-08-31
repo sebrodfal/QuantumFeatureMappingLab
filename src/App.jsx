@@ -16,6 +16,8 @@ import { QuantumCircuitSection } from './components/QuantumCircuitSection/Quantu
 import { FeatureSpaceComparison } from './components/FeatureSpaceComparison/FeatureSpaceComparison';
 import { MethodologyNote } from './components/MethodologyNote/MethodologyNote';
 import { LiveBoardPanel } from './components/LiveBoardPanel/LiveBoardPanel';
+import { InnovationCenterSection } from './components/InnovationCenterSection/InnovationCenterSection';
+
 
 /*
   QUANTUM FEATURE MAPPING LAB (Real Dataset Mode)
@@ -280,6 +282,8 @@ export default function App() {
       />
 
       <MethodologyNote />
+
+      <InnovationCenterSection />
     </div>
   );
 }
