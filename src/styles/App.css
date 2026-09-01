@@ -663,7 +663,7 @@ input[type="range"] {
 .split {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: auto auto auto auto;
+  grid-template-rows: auto auto auto auto auto;
   align-items: stretch;
   gap: 14px 18px;
   max-width: 1500px;
@@ -676,7 +676,7 @@ input[type="range"] {
   height: 100%;
   display: grid;
   grid-template-rows: subgrid;
-  grid-row: span 4;
+  grid-row: span 5;
   gap: 14px;
   align-items: stretch;
 }
@@ -684,7 +684,7 @@ input[type="range"] {
 @media (min-width: 1300px) {
   .side-card {
     grid-template-rows: subgrid;
-    grid-row: span 4;
+    grid-row: span 5;
   }
 }
 
@@ -964,8 +964,8 @@ input[type="range"] {
 .validation-card {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  min-height: 160px;
+  justify-content: space-between;
+  min-height: 210px;
   height: 100%;
   overflow: visible;
   padding: 12px 16px;
@@ -2648,3 +2648,183 @@ input[type="range"] {
   line-height: 1.6;
   color: #C2D5ED;
 }
+
+/* ==========================================================================
+   NTT DATA Innovation Center (Peru) - Compact QR Section
+   ========================================================================== */
+
+.innovation-qr-card {
+  margin-top: 20px;
+  background: linear-gradient(135deg, rgba(15, 27, 45, 0.95) 0%, rgba(18, 22, 36, 0.9) 100%);
+  border: 1px solid rgba(139, 233, 253, 0.22);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.innovation-qr-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .innovation-qr-layout {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}
+
+.innovation-text-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.innovation-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 16px;
+  color: #FCA5A5;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+@media (max-width: 768px) {
+  .innovation-pill-tag {
+    margin: 0 auto;
+  }
+}
+
+.peru-flag-emoji {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.innovation-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #F8FAFF;
+  margin: 2px 0 0 0;
+}
+
+.innovation-card-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9EACC2;
+  margin: 0;
+}
+
+.innovation-card-desc strong {
+  color: #E2E8F0;
+}
+
+.innovation-card-meta {
+  font-size: 12px;
+  color: #7C8EA8;
+  line-height: 1.45;
+}
+
+.innovation-links-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  .innovation-links-row {
+    justify-content: center;
+  }
+}
+
+.innovation-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+}
+
+.innovation-btn.copy-btn {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: #8BE9FD;
+}
+
+.innovation-btn.copy-btn:hover {
+  background: rgba(0, 229, 255, 0.2);
+  border-color: #00E5FF;
+  color: #FFFFFF;
+}
+
+.innovation-btn.copy-btn.copied {
+  background: rgba(74, 222, 128, 0.2);
+  border-color: #4ADE80;
+  color: #86EFAC;
+}
+
+.innovation-btn.open-btn {
+  background: rgba(155, 93, 229, 0.15);
+  border: 1px solid rgba(155, 93, 229, 0.4);
+  color: #D8B4FE;
+}
+
+.innovation-btn.open-btn:hover {
+  background: rgba(155, 93, 229, 0.28);
+  border-color: #9B5DE5;
+  color: #FFFFFF;
+}
+
+/* Right QR Column */
+.innovation-qr-col {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clean-qr-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.clean-qr-frame {
+  background: #FFFFFF;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.clean-qr-frame svg {
+  display: block;
+  border-radius: 4px;
+}
+
+.clean-qr-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #8BE9FD;
+}
+

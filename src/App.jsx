@@ -6,6 +6,8 @@ import { meanOff } from './utils/correlation';
 import { decisionStatus } from './utils/decisionStatus';
 import { useThresholdPopover } from './hooks/useThresholdPopover';
 import { useLiveBoard } from './hooks/useLiveBoard';
+import { physicalToUnit } from './data/calibration';
+
 
 import { Header } from './components/Header/Header';
 import { SourceDataSection } from './components/SourceDataSection/SourceDataSection';
@@ -16,6 +18,8 @@ import { QuantumCircuitSection } from './components/QuantumCircuitSection/Quantu
 import { FeatureSpaceComparison } from './components/FeatureSpaceComparison/FeatureSpaceComparison';
 import { MethodologyNote } from './components/MethodologyNote/MethodologyNote';
 import { LiveBoardPanel } from './components/LiveBoardPanel/LiveBoardPanel';
+import { InnovationCenterSection } from './components/InnovationCenterSection/InnovationCenterSection';
+
 
 /*
   QUANTUM FEATURE MAPPING LAB (Real Dataset Mode)
@@ -37,18 +41,44 @@ export default function App() {
     thresholdPopoverRef,
   } = useThresholdPopover();
 
+  // --- SECTION 1 STATE & CONTROLS: Physical / Simulated Live Board ---
   const liveBoard = useLiveBoard();
-  const liveActive = liveBoard.isLive;
 
+  const section1Reading = liveBoard.reading;
+  const section1Result = liveBoard.result;
+  const section1Sensors = section1Result?.x ?? (section1Reading ? physicalToUnit(section1Reading) : [0.5, 0.5, 0.5, 0.5]);
+  const section1Label = section1Result?.label ?? (liveBoard.stagedMatch?.knownTruth === 'deviation' ? 1 : 0);
+  const section1ClassicalAlert = section1Result?.classicalAlert ?? false;
+  const section1QuantumAlert = section1Result?.quantumAlert ?? false;
+  const section1MachineAlert = liveBoard.activeMode === 'classical' ? section1ClassicalAlert : section1QuantumAlert;
+  const section1RecordId = section1Result?.recordId ?? 0;
+
+  const section1DisplayValues = section1Reading
+    ? [
+        `${section1Reading.hoistLoad.toFixed(1)} kN`,
+        `${section1Reading.crowdVib.toFixed(1)} mm/s`,
+        `${section1Reading.driveTemp.toFixed(1)} °C`,
+        `${section1Reading.cableTension.toFixed(1)} MPa`,
+      ]
+    : [
+        '250.0 kN',
+        '25.0 mm/s',
+        '110.0 °C',
+        '100.5 MPa',
+      ];
+
+  const sensorColors = [
+    C.interaction,
+    C.deviation,
+    C.warning,
+    C.classicalLight,
+  ];
+
+  // --- SECTION 2 STATE & CONTROLS: Plant Noise & Dataset Record Exploration (Lab Controls) ---
   const R = useMemo(() => runPipeline(noise), [noise]);
 
   const visibleCount = R.records ? R.records.length : 1000;
   const visibleSample = Math.min(sample, visibleCount - 1);
-
-  // Active record index: driven by LiveBoard when active/snapped, otherwise by explorer slider
-  const activeRecordId = liveActive && liveBoard.result
-    ? Math.min(liveBoard.result.recordId, visibleCount - 1)
-    : visibleSample;
 
   const rawCorrelation = meanOff(R.classical.corr);
   const quantumCorrelation = meanOff(R.quantum.corr);
@@ -67,71 +97,25 @@ export default function App() {
 
   const labels = R.test.y.slice(0, visibleCount);
 
-  // Instantaneous readings and scores for the active sample
-  const selectedSensors = liveActive && liveBoard.result?.x
-    ? liveBoard.result.x
-    : R.test.X[activeRecordId] || [0.5, 0.5, 0.5, 0.5];
-
-  const selectedLabel = liveActive && liveBoard.result
-    ? liveBoard.result.label
-    : (R.test.y[activeRecordId] ?? 0);
+  // Section 2 selected record: strictly driven by Lab Controls' visibleSample
+  const sec2Label = R.test.y[visibleSample] ?? 0;
+  const sec2ConditionColor = sec2Label ? C.deviation : C.healthy;
 
   const classicalThreshold = R.classical.op.threshold;
   const quantumThreshold = R.quantum.op.threshold;
 
-  const classicalScore = liveActive && liveBoard.result
-    ? liveBoard.result.classicalScore
-    : (R.classical.scores[activeRecordId] ?? 0);
+  const sec2ClassicalScore = R.classical.scores[visibleSample] ?? 0;
+  const sec2QuantumScore = R.quantum.scores[visibleSample] ?? 0;
 
-  const quantumScore = liveActive && liveBoard.result
-    ? liveBoard.result.quantumScore
-    : (R.quantum.scores[activeRecordId] ?? 0);
+  const sec2ClassicalAlert = sec2ClassicalScore >= classicalThreshold;
+  const sec2QuantumAlert = sec2QuantumScore >= quantumThreshold;
 
-  const classicalAlert = liveActive && liveBoard.result
-    ? liveBoard.result.classicalAlert
-    : classicalScore >= classicalThreshold;
-
-  const quantumAlert = liveActive && liveBoard.result
-    ? liveBoard.result.quantumAlert
-    : quantumScore >= quantumThreshold;
-
-  const machineAlert = liveBoard.activeMode === 'classical' ? classicalAlert : quantumAlert;
-
-  const classicalStatus = decisionStatus(selectedLabel, classicalAlert);
-  const quantumStatus = decisionStatus(selectedLabel, quantumAlert);
+  const sec2ClassicalStatus = decisionStatus(sec2Label, sec2ClassicalAlert);
+  const sec2QuantumStatus = decisionStatus(sec2Label, sec2QuantumAlert);
 
   const aucDelta = (R.quantum.auc - R.classical.auc) * 100;
   const falseAlarmReduction =
     Math.max(0, R.classical.op.fpr - R.quantum.op.fpr) * 100;
-
-  const sensorColors = [
-    C.interaction,
-    C.deviation,
-    C.warning,
-    C.classicalLight,
-  ];
-
-  const selectedConditionColor = selectedLabel ? C.deviation : C.healthy;
-
-  const rawRec = R.records?.[activeRecordId];
-  const displayHoist = rawRec?.display?.hoistLoad || ((selectedSensors[0] * 500).toFixed(1) + ' kN');
-  const displayCrowd = rawRec?.display?.crowdVib || ((selectedSensors[1] * 50).toFixed(1) + ' mm/s');
-  const displayTemp = rawRec?.display?.driveTemp || ((20 + selectedSensors[2] * 180).toFixed(1) + ' °C');
-  const displayTension = rawRec?.display?.cableTension || ((1 + selectedSensors[3] * 199).toFixed(1) + ' MPa');
-
-  const sensorDisplayValues = liveActive && liveBoard.reading
-    ? [
-        `${liveBoard.reading.hoistLoad.toFixed(1)} kN`,
-        `${liveBoard.reading.crowdVib.toFixed(1)} mm/s`,
-        `${liveBoard.reading.driveTemp.toFixed(1)} °C`,
-        `${liveBoard.reading.cableTension.toFixed(1)} MPa`,
-      ]
-    : [
-        displayHoist,
-        displayCrowd,
-        displayTemp,
-        displayTension,
-      ];
 
   const classicalCard = {
     variant: 'classical',
@@ -163,13 +147,13 @@ export default function App() {
       color: C.classicalLight,
     },
     selected: {
-      index: activeRecordId,
-      label: selectedLabel,
-      conditionColor: selectedConditionColor,
-      score: classicalScore,
+      index: visibleSample,
+      label: sec2Label,
+      conditionColor: sec2ConditionColor,
+      score: sec2ClassicalScore,
       threshold: classicalThreshold,
-      alert: classicalAlert,
-      status: classicalStatus,
+      alert: sec2ClassicalAlert,
+      status: sec2ClassicalStatus,
     },
   };
 
@@ -207,13 +191,13 @@ export default function App() {
       color: C.quantumLight,
     },
     selected: {
-      index: activeRecordId,
-      label: selectedLabel,
-      conditionColor: selectedConditionColor,
-      score: quantumScore,
+      index: visibleSample,
+      label: sec2Label,
+      conditionColor: sec2ConditionColor,
+      score: sec2QuantumScore,
       threshold: quantumThreshold,
-      alert: quantumAlert,
-      status: quantumStatus,
+      alert: sec2QuantumAlert,
+      status: sec2QuantumStatus,
     },
   };
 
@@ -224,14 +208,14 @@ export default function App() {
       <div className="divider" />
 
       <SourceDataSection
-        visibleSample={activeRecordId}
-        selectedSensors={selectedSensors}
+        visibleSample={section1RecordId}
+        selectedSensors={section1Sensors}
         sensorColors={sensorColors}
-        alert={machineAlert}
-        label={selectedLabel}
+        alert={section1MachineAlert}
+        label={section1Label}
         mode={liveBoard.activeMode}
-        liveMode={liveActive}
-        sensorDisplayValues={sensorDisplayValues}
+        liveMode={true}
+        sensorDisplayValues={section1DisplayValues}
       />
 
       <LiveBoardPanel liveBoard={liveBoard} />
@@ -241,7 +225,7 @@ export default function App() {
         onNoiseChange={setNoise}
         visibleSample={visibleSample}
         visibleCount={visibleCount}
-        selectedLabel={selectedLabel}
+        selectedLabel={sec2Label}
         onSampleChange={setSample}
         showThresholdExplanation={showThresholdExplanation}
         onToggleThresholdExplanation={() =>
@@ -280,6 +264,8 @@ export default function App() {
       />
 
       <MethodologyNote />
+
+      <InnovationCenterSection />
     </div>
   );
 }

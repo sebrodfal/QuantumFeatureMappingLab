@@ -46,3 +46,19 @@ export function physicalToUnit(physicalReading) {
     return Math.min(1, Math.max(0, (value - lo) / (hi - lo + 1e-9)));
   });
 }
+
+export const SLIDER_FIELDS = [
+  { key: 'hoistLoad', label: 'Hoist Load' },
+  { key: 'crowdVib', label: 'Crowd Vib.' },
+  { key: 'driveTemp', label: 'Drive Temp.' },
+  { key: 'cableTension', label: 'Cable Tension' },
+];
+
+export function midpointReading() {
+  return PHYSICAL_ORDER.reduce((acc, key) => {
+    const { min, max } = PHYSICAL_RANGES[key];
+    acc[key] = Math.round(((min + max) / 2) * 10) / 10;
+    return acc;
+  }, {});
+}
+

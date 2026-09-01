@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { liveScore } from '../utils/liveScore.js';
 import { matchStagedScenario } from '../data/stagedScenarios.js';
+import { midpointReading } from '../data/calibration.js';
 
 /*
   WebSocket client for the physical ESP32 board (docs/demo-fisico-spec.md
@@ -23,15 +24,17 @@ import { matchStagedScenario } from '../data/stagedScenarios.js';
 const RECONNECT_DELAY_MS = 3000;
 
 export function useLiveBoard() {
+  const defaultReading = midpointReading();
   const [status, setStatus] = useState('disconnected'); // disconnected | connecting | connected | error
   const [url, setUrl] = useState('ws://192.168.4.1/ws');
   const [enabled, setEnabled] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [reading, setReading] = useState(null); // last { hoistLoad, crowdVib, driveTemp, cableTension, mode? }
-  const [result, setResult] = useState(null); // last liveScore() output
-  const [stagedMatch, setStagedMatch] = useState(null); // matched src/data/stagedScenarios.js entry, or null
+  const [reading, setReading] = useState(defaultReading); // last { hoistLoad, crowdVib, driveTemp, cableTension, mode? }
+  const [result, setResult] = useState(() => liveScore(defaultReading)); // last liveScore() output
+  const [stagedMatch, setStagedMatch] = useState(() => matchStagedScenario(defaultReading)); // matched src/data/stagedScenarios.js entry, or null
   const [lastError, setLastError] = useState(null);
   const [manualMode, setManualMode] = useState('quantum'); // used until the board sends a real `mode`
+
 
   const wsRef = useRef(null);
   const reconnectTimerRef = useRef(null);
@@ -76,9 +79,9 @@ export function useLiveBoard() {
     (initialReading) => {
       disconnect();
       setIsSimulating(true);
-      applyReading(initialReading);
+      applyReading(initialReading || defaultReading);
     },
-    [disconnect, applyReading]
+    [disconnect, applyReading, defaultReading]
   );
 
   const stopSimulation = useCallback(() => {
@@ -200,7 +203,8 @@ export function useLiveBoard() {
   }, [reading?.mode]);
 
   const activeMode = manualMode;
-  const isLive = (status === 'connected' || isSimulating) && result !== null;
+  const isLive = status === 'connected' || isSimulating || result !== null;
+
 
   return {
     status,
