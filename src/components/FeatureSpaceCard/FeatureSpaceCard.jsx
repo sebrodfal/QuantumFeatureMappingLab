@@ -16,7 +16,6 @@ export function FeatureSpaceCard({
   chipCaption,
   heatmap,
   scatter,
-  metric,
   validation,
   selected,
 }) {
@@ -96,11 +95,6 @@ export function FeatureSpaceCard({
         note={scatter.note}
       />
 
-      <div className="metric-box">
-        <div className="small-label">{metric.label}</div>
-        <div className="metric-description">{metric.description}</div>
-      </div>
-
       <div className="validation-card">
         <div className="validation-global">
           <div className="small-label">Global Validation</div>
@@ -168,10 +162,6 @@ export function FeatureSpaceCard({
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="validation-note">
-          Threshold selected to detect at least 80% of known deviations.
         </div>
       </div>
     </section>
