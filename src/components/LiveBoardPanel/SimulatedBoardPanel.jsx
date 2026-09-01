@@ -1,21 +1,9 @@
 import { useEffect } from 'react';
-import { PHYSICAL_RANGES } from '../../data/calibration.js';
+import { PHYSICAL_RANGES, SLIDER_FIELDS, midpointReading } from '../../data/calibration.js';
 import { STAGED_SCENARIOS } from '../../data/stagedScenarios.js';
 
-const SLIDER_FIELDS = [
-  { key: 'hoistLoad', label: 'Hoist Load' },
-  { key: 'crowdVib', label: 'Crowd Vib.' },
-  { key: 'driveTemp', label: 'Drive Temp.' },
-  { key: 'cableTension', label: 'Cable Tension' },
-];
+export { midpointReading };
 
-export function midpointReading() {
-  return SLIDER_FIELDS.reduce((acc, { key }) => {
-    const { min, max } = PHYSICAL_RANGES[key];
-    acc[key] = Math.round(((min + max) / 2) * 10) / 10;
-    return acc;
-  }, {});
-}
 
 /* On-screen stand-in for the physical potentiometers — drag a slider and it
    drives the same scoring path a real board message would (useLiveBoard's

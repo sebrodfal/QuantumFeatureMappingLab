@@ -4,7 +4,7 @@ import { ExternalLink, Copy, Check, QrCode } from 'lucide-react';
 
 export function InnovationCenterSection() {
   const [copied, setCopied] = useState(false);
-  const innovationUrl = 'https://es.nttdata.com/';
+  const innovationUrl = 'https://pe.nttdata.com/';
 
   const handleCopyUrl = async () => {
     try {
@@ -43,13 +43,9 @@ export function InnovationCenterSection() {
           </h2>
 
           <p className="innovation-card-desc">
-            Developed by the <strong>Quantum Computing & Emerging Technologies</strong> team at{' '}
+            Developed by the Innovation Center team at{' '}
             <strong>NTT DATA Peru</strong> in collaboration with <strong>Kipu Quantum</strong>.
           </p>
-
-          <div className="innovation-card-meta">
-            Scan the QR code to visit the Innovation Center portal and explore our quantum computing & industrial AI initiatives.
-          </div>
 
           <div className="innovation-links-row">
             <button
@@ -76,10 +72,9 @@ export function InnovationCenterSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="innovation-btn open-btn"
-              title="Open Innovation Center website in new tab"
             >
               <ExternalLink size={14} />
-              <span>Visit Innovation Center</span>
+              <span>Visit NTT DATA Peru</span>
             </a>
           </div>
         </div>
