@@ -532,7 +532,13 @@ input[type="range"] {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 22px;
-  align-items: center;
+  align-items: start;
+}
+
+.source-mode-switch-row {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
 }
 
 .tag {
@@ -2070,26 +2076,60 @@ input[type="range"] {
 
 .sim-board-start .control-text { margin-bottom: 10px; }
 
-.sim-board-presets {
+/* --- Live Board: outer Known Cases / Advanced tabs --- */
+.live-board-outer-tabs {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
-.sim-preset-btn {
-  padding: 5px 11px;
-  border-radius: 14px;
-  border: 1px solid rgba(139, 233, 253, 0.35);
-  background: rgba(139, 233, 253, 0.08);
+.live-board-outer-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(121, 201, 183, 0.25);
+  color: #9EACC2;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.live-board-outer-tab-btn:hover {
+  color: #F8FAFF;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.live-board-outer-tab-btn.active {
+  background: rgba(121, 201, 183, 0.14);
+  border-color: rgba(121, 201, 183, 0.55);
+  color: #79C9B7;
+}
+
+/* --- Known Cases tab: quick, client-facing one-click list --- */
+.known-cases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.known-case-btn {
+  width: 100%;
+  text-align: left;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  background: rgba(139, 233, 253, 0.06);
   color: #8BE9FD;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.sim-preset-btn:hover {
-  background: rgba(139, 233, 253, 0.18);
+.known-case-btn:hover {
+  background: rgba(139, 233, 253, 0.16);
 }
 
 /* --- Snapped Real Kipu Record Feedback --- */

@@ -216,6 +216,9 @@ export default function App() {
         mode={liveBoard.activeMode}
         liveMode={true}
         sensorDisplayValues={section1DisplayValues}
+        onModeChange={liveBoard.setManualMode}
+        classicalAlert={section1ClassicalAlert}
+        quantumAlert={section1QuantumAlert}
       />
 
       <LiveBoardPanel liveBoard={liveBoard} />

@@ -1,5 +1,6 @@
 import { MachineDiagram } from '../MachineDiagram/MachineDiagram';
 import { SensorCard } from '../SensorCard/SensorCard';
+import { ModeSwitch } from '../LiveBoardPanel/ModeSwitch';
 import { RAW, UNITS } from '../../data/constants';
 
 export function SourceDataSection({
@@ -11,17 +12,28 @@ export function SourceDataSection({
   mode = 'quantum',
   liveMode = false,
   sensorDisplayValues = null,
+  onModeChange,
+  classicalAlert = false,
+  quantumAlert = false,
 }) {
   return (
     <section className="card">
       <h2 className="section-title">1. Common Source of Industrial Data — Heavy Mining Shovel Telemetry</h2>
       <p className="section-description">
-        Heavy electric rope shovels operate in high-impact mining environments where mechanical cable fatigue threatens critical operations. 
-        Onboard sensors record four primary telemetry signals—measuring hoist load stress, crowd vibration, motor temperatures, and cumulative cable tension. 
-        This raw telemetry stream serves as the shared starting point for both classical and quantum feature-mapped representations to predict structural cable rupture before catastrophic downtime occurs.
+        Heavy electric rope shovels operate in high-impact mining environments where cable fatigue threatens critical operations.
+        Four onboard sensors — hoist load, crowd vibration, motor temperature, and cable tension — feed both representations below, predicting cable rupture before it causes downtime.
       </p>
 
       <div className="source-grid">
+        <div className="source-mode-switch-row">
+          <ModeSwitch
+            mode={mode}
+            onSelect={onModeChange}
+            classicalAlert={classicalAlert}
+            quantumAlert={quantumAlert}
+          />
+        </div>
+
         <div>
           <span className="tag">Physical Asset: Electric Mining Rope Shovel</span>
           <MachineDiagram alert={alert} label={label} mode={mode} />

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { ModeSwitch } from './ModeSwitch';
 import { SimulatedBoardPanel } from './SimulatedBoardPanel';
+import { KnownCasesPanel } from './KnownCasesPanel';
 import { useDraggable } from '../../hooks/useDraggable';
 
 const STATUS_LABEL = {
@@ -31,18 +31,17 @@ export function LiveBoardPanel({ liveBoard }) {
     stopSimulation,
     updateSimulation,
     activeMode,
-    setManualMode,
   } = liveBoard;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [urlInput, setUrlInput] = useState(url);
-  const [activeTab, setActiveTab] = useState('simulate'); // 'simulate' | 'board'
+  const [outerTab, setOuterTab] = useState('cases'); // 'cases' | 'advanced' — client-facing view first
+  const [activeTab, setActiveTab] = useState('simulate'); // 'simulate' | 'board' (inside "Advanced")
   const containerRef = useRef(null);
 
   const { panelRef, position, isDragging, dragHandleProps } = useDraggable();
 
   const isBusy = status === 'connected' || status === 'connecting';
-  const isAutoMode = Boolean(reading?.mode);
 
   // Close when clicking outside the expanded panel (unless dragging)
   useEffect(() => {
@@ -117,22 +116,6 @@ export function LiveBoardPanel({ liveBoard }) {
           </div>
 
           <div className="live-board-body">
-            <div className="live-board-section live-board-switch-section">
-              <div className="small-label">Classical / Quantum Switch</div>
-              <ModeSwitch
-                mode={activeMode}
-                isAuto={isAutoMode}
-                onSelect={setManualMode}
-                classicalAlert={result?.classicalAlert ?? false}
-                quantumAlert={result?.quantumAlert ?? false}
-              />
-              <p className="live-board-hint">
-                {isAutoMode
-                  ? 'Synced from the last board reading — click either side to override.'
-                  : 'Manual — click either side to switch.'}
-              </p>
-            </div>
-
             {result && (
               <div className="live-board-section">
                 {stagedMatch ? (
@@ -156,53 +139,80 @@ export function LiveBoardPanel({ liveBoard }) {
             )}
 
             <div className="live-board-section">
-              <div className="live-board-tabs no-drag">
+              <div className="live-board-outer-tabs no-drag">
                 <button
                   type="button"
-                  className={`live-board-tab-btn ${activeTab === 'simulate' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('simulate')}
+                  className={`live-board-outer-tab-btn ${outerTab === 'cases' ? 'active' : ''}`}
+                  onClick={() => setOuterTab('cases')}
                 >
-                  🎚️ Simulate Knobs
+                  🎯 Known Cases
                 </button>
                 <button
                   type="button"
-                  className={`live-board-tab-btn ${activeTab === 'board' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('board')}
+                  className={`live-board-outer-tab-btn ${outerTab === 'advanced' ? 'active' : ''}`}
+                  onClick={() => setOuterTab('advanced')}
                 >
-                  🔌 Real board (WS)
+                  ⚙️ Advanced
                 </button>
               </div>
 
-              {activeTab === 'simulate' ? (
-                <SimulatedBoardPanel
+              {outerTab === 'cases' ? (
+                <KnownCasesPanel
                   isSimulating={isSimulating}
-                  reading={reading}
-                  result={result}
                   onStart={startSimulation}
-                  onStop={stopSimulation}
                   onUpdate={updateSimulation}
                 />
               ) : (
-                <div className="live-board-ws-controls">
-                  <div className="live-board-url-row">
-                    <input
-                      type="text"
-                      className="live-board-url-input"
-                      value={urlInput}
-                      onChange={(e) => setUrlInput(e.target.value)}
-                      placeholder="ws://192.168.4.1/ws"
-                      disabled={isBusy}
-                    />
+                <>
+                  <div className="live-board-tabs no-drag">
                     <button
                       type="button"
-                      className={`live-board-action-btn ${isBusy ? 'live-board-disconnect-btn' : ''}`}
-                      onClick={() => (isBusy ? disconnect() : connect(urlInput))}
+                      className={`live-board-tab-btn ${activeTab === 'simulate' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('simulate')}
                     >
-                      {isBusy ? 'Disconnect' : 'Connect'}
+                      🎚️ Simulate Knobs
+                    </button>
+                    <button
+                      type="button"
+                      className={`live-board-tab-btn ${activeTab === 'board' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('board')}
+                    >
+                      🔌 Real board (WS)
                     </button>
                   </div>
-                  {lastError && <div className="live-board-error-msg">{lastError}</div>}
-                </div>
+
+                  {activeTab === 'simulate' ? (
+                    <SimulatedBoardPanel
+                      isSimulating={isSimulating}
+                      reading={reading}
+                      result={result}
+                      onStart={startSimulation}
+                      onStop={stopSimulation}
+                      onUpdate={updateSimulation}
+                    />
+                  ) : (
+                    <div className="live-board-ws-controls">
+                      <div className="live-board-url-row">
+                        <input
+                          type="text"
+                          className="live-board-url-input"
+                          value={urlInput}
+                          onChange={(e) => setUrlInput(e.target.value)}
+                          placeholder="ws://192.168.4.1/ws"
+                          disabled={isBusy}
+                        />
+                        <button
+                          type="button"
+                          className={`live-board-action-btn ${isBusy ? 'live-board-disconnect-btn' : ''}`}
+                          onClick={() => (isBusy ? disconnect() : connect(urlInput))}
+                        >
+                          {isBusy ? 'Disconnect' : 'Connect'}
+                        </button>
+                      </div>
+                      {lastError && <div className="live-board-error-msg">{lastError}</div>}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

@@ -34,11 +34,6 @@ export function Header() {
         </div>
         <h1>Digitized Quantum Feature Extraction (DQFE)</h1>
       </div>
-
-      <div className="subtitle">
-        Industrial Mining Telemetry → Quantum Spin Hamiltonian Feature Mapping
-        <br />→ Derived Multi-Body Observables for Failure Analytics & Cost Optimization
-      </div>
     </header>
   );
 }

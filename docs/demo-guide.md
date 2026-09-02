@@ -109,7 +109,7 @@ Lead with False Alarms Avoided, not AUC — it answers the real business questio
 
 ### 2.6 Live Board — "quantum catches it, classical doesn't"
 
-The centerpiece scene. Open **📡 Live Board** → **🎚️ Simulate perillas** → click **"Quantum catches it (Classical misses)"**.
+The centerpiece scene. The Classical/Quantum switch is now also visible directly in Section 1, above the shovel diagram — it can be flipped right there, no panel needed. To load the specific curated case below, open **📡 Live Board** → **🎚️ Simulate perillas** → click **"Quantum catches it (Classical misses)"**.
 
 **Loads Record #36, a real, known rupture:**
 
@@ -136,20 +136,13 @@ Do this twice — once in the walkthrough, once again near the close, slower.
 | Is this the best possible classical model? | No. A non-linear classical model (gradient boosting) on raw alone reaches AP 0.895 — shown on the chart as a reference point, not part of the tested comparison. The tested question is narrower: does adding quantum features improve a fixed, simple classifier? Yes, confirmed. |
 | Is this a quantum advantage claim? | No. The quantum features are computed from the same 4 sensor readings. The claim is: this transformation measurably helps this classifier, on this data. |
 | Is the dataset real? | The 3,000-record benchmark is a synthetic digital twin. The live interactive demo (2A/2B, Live Board) runs on 1,000 real evaluated records. |
-| How often does a rupture happen, and what does it cost? | See §4. |
-| Can I get access? | Yes — see §5. |
+| How often does a rupture happen, and what does it cost? | Not confirmed yet — don't quote a hard number. Say the team is gathering exact figures with the client, and that each event is a costly, unplanned shutdown this system is designed to catch early. |
+| Can I get access? | Yes — see §4. |
 | Is this running on a real quantum computer right now? | The batch results were computed once by Kipu. What you're driving live is the same trained classifier scoring real cases — not a live quantum circuit. |
 
 ---
 
-## 4. Business figures — not fully confirmed
-
-- **Cost per rupture:** ~$50,000 (mentioned in the prior call). Confirm before quoting as a hard number.
-- **Frequency:** not available. If asked: *"We're gathering the exact frequency from the client's data — what we know today is each event is a costly, unplanned shutdown, and this system catches the early signal before it happens."*
-
----
-
-## 5. Closing
+## 4. Closing
 
 - **Live demo:** `https://quantum-feature-mappping-lab.vercel.app/` — any browser, no install, no login.
 - **Run it locally:** repo `QuantumFeatureMapppingLab` — `npm install && npm run dev`.
@@ -157,7 +150,7 @@ Do this twice — once in the walkthrough, once again near the close, slower.
 
 ---
 
-## 6. Do not say
+## 5. Do not say
 
 - The engine "executing now" — say "revealing" precomputed results.
 - "14 observables" or a live local circuit — the real, active features are **7**, computed once by Kipu.

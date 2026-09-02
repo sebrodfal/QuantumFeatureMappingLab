@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { PHYSICAL_RANGES, SLIDER_FIELDS, midpointReading } from '../../data/calibration.js';
-import { STAGED_SCENARIOS } from '../../data/stagedScenarios.js';
 
 export { midpointReading };
 
@@ -46,20 +45,6 @@ export function SimulatedBoardPanel({
 
   return (
     <div className="sim-board">
-      <div className="sim-board-presets no-drag">
-        {STAGED_SCENARIOS.map((scenario) => (
-          <button
-            key={scenario.id}
-            type="button"
-            className="sim-preset-btn no-drag"
-            title={scenario.narrative}
-            onClick={() => engage(scenario.reading)}
-          >
-            {scenario.label}
-          </button>
-        ))}
-      </div>
-
       {result?.matchedRecord && (
         <div className="sim-snap-info-box no-drag">
           <div className="sim-snap-header">
